@@ -24,8 +24,9 @@ export default function ProductSlider({ products, onBuy }: Props) {
   const { t, lang } = useLanguage();
   const { usdToTomanFormatted } = useCurrency();
   const [current, setCurrent] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
 
   const isFa = lang === "fa";
@@ -54,18 +55,26 @@ export default function ProductSlider({ products, onBuy }: Props) {
 
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX;
+    setIsDragging(true);
+    if (autoplayRef.current) clearInterval(autoplayRef.current);
   }
+
   function handleTouchMove(e: React.TouchEvent) {
-    touchEndX.current = e.touches[0].clientX;
-  }
-  function handleTouchEnd() {
-    const diff = touchStartX.current - touchEndX.current;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) goNext();
-      else goPrev();
+    const delta = e.touches[0].clientX - touchStartX.current;
+    // Resist at edges
+    if ((current === 0 && delta > 0) || (current === total - 1 && delta < 0)) {
+      setDragOffset(delta * 0.2);
+    } else {
+      setDragOffset(delta);
     }
-    touchStartX.current = 0;
-    touchEndX.current = 0;
+  }
+
+  function handleTouchEnd() {
+    setIsDragging(false);
+    if (dragOffset < -60) goNext();
+    else if (dragOffset > 60) goPrev();
+    setDragOffset(0);
+    resetAutoplay();
   }
 
   if (total === 0) return null;
@@ -93,8 +102,8 @@ export default function ProductSlider({ products, onBuy }: Props) {
           onTouchEnd={handleTouchEnd}
         >
           <div
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${current * 100}%)` }}
+            className={`flex ${isDragging ? "" : "transition-transform duration-500 ease-in-out"}`}
+            style={{ transform: `translateX(calc(-${current * 100}% + ${dragOffset}px))` }}
           >
             {products.map((product) => {
               const hasImage = !!product.imageUrl;
