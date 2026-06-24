@@ -191,15 +191,18 @@ export default function ProductSlider({ products, onBuy }: Props) {
                       )}
                     </div>
 
-                    {/* Bottom: title + button + dots */}
+                    {/* Bottom: title + desc + button + dots */}
                     <div>
-                      <h3 className="text-base font-bold text-white leading-tight line-clamp-2 drop-shadow-lg mb-2.5">
+                      <h3 className="text-sm font-bold text-white leading-tight line-clamp-1 drop-shadow-lg mb-0.5">
                         {product.title}
                       </h3>
+                      <p className="text-[10px] text-white/70 line-clamp-1 mb-2">
+                        {product.description}
+                      </p>
                       <div className="flex items-center justify-between" dir="ltr">
                         <button
                           onClick={() => onBuy(product)}
-                          className="bg-accent text-bg-primary text-xs font-bold px-4 py-2 rounded-xl active:scale-95 transition-transform shadow-lg shadow-accent/20"
+                          className="bg-accent text-bg-primary text-[10px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform shadow-lg shadow-accent/20"
                           dir={isFa ? "rtl" : "ltr"}
                         >
                           {t("buyNow")} · {priceText}
