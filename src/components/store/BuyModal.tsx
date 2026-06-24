@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Check } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -23,6 +23,16 @@ export default function BuyModal({ product, onClose, onSuccess }: Props) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    requestAnimationFrame(() => setVisible(true));
+  }, []);
+
+  function handleClose() {
+    setVisible(false);
+    setTimeout(onClose, 300);
+  }
 
   const [selectedPkg, setSelectedPkg] = useState<ProductPackage | null>(
     product.packages && product.packages.length > 0 ? product.packages[0] : null
@@ -77,8 +87,16 @@ export default function BuyModal({ product, onClose, onSuccess }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-md bg-bg-secondary rounded-t-3xl p-5 pb-8 border-t border-border transition-all">
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center backdrop-blur-sm transition-colors duration-300"
+      style={{ backgroundColor: visible ? "rgba(0,0,0,0.6)" : "rgba(0,0,0,0)" }}
+      onClick={handleClose}
+    >
+      <div
+        className="w-full max-w-md bg-bg-secondary rounded-t-3xl p-5 pb-8 border-t border-border transition-transform duration-300 ease-out"
+        style={{ transform: visible ? "translateY(0)" : "translateY(100%)" }}
+        onClick={(e) => e.stopPropagation()}
+      >
         {success ? (
           <div className="flex flex-col items-center gap-4 py-6">
             <div className="w-16 h-16 bg-success/20 rounded-full flex items-center justify-center">
@@ -91,7 +109,7 @@ export default function BuyModal({ product, onClose, onSuccess }: Props) {
           <>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-bold">{t("confirmPurchase")}</h2>
-              <button onClick={onClose} className="w-8 h-8 bg-bg-elevated rounded-full flex items-center justify-center">
+              <button onClick={handleClose} className="w-8 h-8 bg-bg-elevated rounded-full flex items-center justify-center">
                 <X size={16} />
               </button>
             </div>

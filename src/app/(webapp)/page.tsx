@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, ShoppingBag } from "lucide-react";
 import ProductCard from "@/components/store/ProductCard";
 import ProductSlider from "@/components/store/ProductSlider";
 import BuyModal from "@/components/store/BuyModal";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useCurrency } from "@/hooks/useCurrency";
 import type { ProductWithStock } from "@/types";
 
 const DEMO_PRODUCTS: ProductWithStock[] = [
@@ -294,6 +295,8 @@ const CATEGORY_PRODUCT_MAP: Record<string, string[]> = {
 
 export default function StorePage() {
   const { t, lang } = useLanguage();
+  const { usdToTomanFormatted } = useCurrency();
+  const isFa = lang === "fa";
   const [products, setProducts] = useState<ProductWithStock[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<ProductWithStock | null>(null);
@@ -391,7 +394,11 @@ export default function StorePage() {
             <div key={i} className="bg-bg-card rounded-2xl h-64 animate-pulse" />
           ))}
         </div>
-      ) : (
+      ) : activeCategory === "all" ? (
+        <div className="flex flex-col gap-3">
+          <h2 className="text-3xl font-black italic text-text-primary text-center py-2">
+            {lang === "fa" ? "همه محصولات" : "All products"}
+          </h2>
         <div className="grid grid-cols-2 gap-3">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
@@ -403,6 +410,71 @@ export default function StorePage() {
             ))
           ) : (
             <div className="col-span-2 text-center py-10 text-text-muted text-sm">
+              {lang === "fa" ? "محصولی پیدا نشد." : "No products found."}
+            </div>
+          )}
+        </div>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <button
+                key={product.id}
+                onClick={() => setSelectedProduct(product)}
+                className="flex items-center gap-3 bg-bg-card border border-border rounded-2xl p-3 active:scale-[0.98] transition-transform w-full text-start"
+              >
+                {/* Image */}
+                <div className="w-16 h-16 shrink-0 rounded-xl bg-bg-elevated flex items-center justify-center overflow-hidden">
+                  {product.imageUrl ? (
+                    <img src={product.imageUrl} alt={product.title} className="w-full h-full object-contain p-1.5" />
+                  ) : (
+                    <span className="text-2xl">📦</span>
+                  )}
+                </div>
+
+                {/* Info + Price + Button */}
+                <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+                  {/* Top: category tag */}
+                  <p className="text-[9px] font-semibold tracking-[0.12em] uppercase text-text-muted">
+                    {product.category}{product.tag ? ` · ${product.tag}` : ""}
+                  </p>
+                  {/* Title */}
+                  <h3 className="text-sm font-bold text-text-primary leading-snug line-clamp-2">
+                    {product.title}
+                  </h3>
+                  {/* Description */}
+                  {product.description && (
+                    <p className="text-[10px] text-text-muted leading-snug line-clamp-1">
+                      {product.description}
+                    </p>
+                  )}
+                  {/* Bottom row: price + buy button */}
+                  <div className="flex items-center justify-between gap-2 mt-0.5">
+                    {/* Price */}
+                    {isFa ? (
+                      <div dir="ltr" className="flex items-baseline gap-1">
+                        <span className="text-sm font-black text-accent">
+                          {usdToTomanFormatted(product.price)}
+                        </span>
+                        <span className="text-[10px] text-text-muted">تومان</span>
+                      </div>
+                    ) : (
+                      <span className="text-sm font-black text-accent" dir="ltr">
+                        ${product.price}
+                      </span>
+                    )}
+                    {/* Buy button */}
+                    <div className="flex items-center gap-1 bg-accent text-bg-primary text-[11px] font-bold px-3 py-1.5 rounded-lg">
+                      <ShoppingBag size={11} strokeWidth={2.5} />
+                      <span>{isFa ? "خرید" : "Buy"}</span>
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))
+          ) : (
+            <div className="text-center py-10 text-text-muted text-sm">
               {lang === "fa" ? "محصولی پیدا نشد." : "No products found."}
             </div>
           )}
