@@ -1,0 +1,48 @@
+"use client";
+import { useEffect } from "react";
+import BottomNav from "@/components/layout/BottomNav";
+import AppHeader from "@/components/layout/AppHeader";
+import { useTelegram } from "@/hooks/useTelegram";
+import { useAppStore } from "@/lib/store";
+
+export default function WebAppLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { user, initData } = useTelegram();
+  const setUserId = useAppStore((s) => s.setUserId);
+  const setBalance = useAppStore((s) => s.setBalance);
+  const lang = useAppStore((s) => s.lang);
+  const isRtl = lang === "fa";
+
+  useEffect(() => {
+    if (!user) return;
+    fetch("/api/auth/telegram", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ initData }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.user) {
+          setUserId(data.user.id);
+          setBalance(data.user.balance);
+        }
+      })
+      .catch(() => {});
+  }, [user, initData, setUserId, setBalance]);
+
+  return (
+    <div
+      dir={isRtl ? "rtl" : "ltr"}
+      className="flex flex-col min-h-screen max-w-md mx-auto"
+    >
+      <AppHeader />
+      <main className="flex-1 overflow-y-auto pb-20 scrollbar-hide">
+        {children}
+      </main>
+      <BottomNav />
+    </div>
+  );
+}

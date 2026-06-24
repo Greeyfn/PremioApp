@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #0f0f0f;
+  --color-bg-secondary: #1a1a1a;
+  --color-bg-card: #1e1a14;
+  --color-bg-elevated: #252525;
+  --color-accent: #e8d5b0;
+  --color-accent-hover: #f0e0c0;
+  --color-accent-dark: #c4a96a;
+  --color-text-primary: #f5f0e8;
+  --color-text-secondary: #9a9189;
+  --color-text-muted: #6b6560;
+  --color-border: #2a2520;
+  --color-border-light: #3a3530;
+  --color-success: #4ade80;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+  --border-radius-2xl: 16px;
+  --border-radius-3xl: 24px;
+}
+
+:root {
+  --tg-viewport-height: 100vh;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html, body {
+  overflow-x: hidden;
+  background-color: #0f0f0f;
+  color: #f5f0e8;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes shimmer-line {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer-line {
+  animation: shimmer-line 3s ease-in-out infinite;
+}

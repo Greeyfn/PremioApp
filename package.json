@@ -1,0 +1,44 @@
+{
+  "name": "premioshop",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "bot:webhook": "node scripts/set-webhook.mjs",
+    "db:seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "@tailwindcss/postcss": "^4.3.1",
+    "@types/node": "^26.0.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vercel/blob": "^2.4.1",
+    "autoprefixer": "^10.5.0",
+    "eslint": "^10.5.0",
+    "eslint-config-next": "^16.2.9",
+    "grammy": "^1.44.0",
+    "lucide-react": "^1.21.0",
+    "next": "^16.2.9",
+    "postcss": "^8.5.15",
+    "prisma": "^5.22.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "tailwindcss": "^4.3.1",
+    "typescript": "^6.0.3",
+    "zod": "^4.4.3",
+    "zustand": "^5.0.14"
+  }
+}

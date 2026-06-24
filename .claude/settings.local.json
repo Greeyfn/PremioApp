@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(mkdir -p /Users/erfanlatifi/Projects/PremioShop/src/app/api/admin/orders/\\\\[orderId\\\\])",
+      "Bash(npx prisma *)"
+    ],
+    "additionalDirectories": [
+      "/Users/erfanlatifi/Projects/PremioShop/src/app/api/admin/orders"
+    ]
+  }
+}
