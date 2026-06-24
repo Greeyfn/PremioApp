@@ -210,14 +210,15 @@ export default function ProductSlider({ products, onBuy }: Props) {
                         ))}
                       </div>
                     )}
-                    {/* Buy button — left */}
-                    <button
-                      onClick={() => onBuy(product)}
-                      className="bg-accent text-bg-primary text-[11px] font-bold px-4 py-1.5 rounded-xl active:scale-95 transition-transform shadow-lg shadow-accent/20"
-                      dir="ltr"
-                    >
-                      {t("buyNow")} · {product.priceSuffix ? `${isFa ? "از " : "from "}` : ""}{priceText}
-                    </button>
+                    {/* Buy button — always physical left */}
+                    <div dir="ltr">
+                      <button
+                        onClick={() => onBuy(product)}
+                        className="bg-accent text-bg-primary text-[11px] font-bold px-4 py-1.5 rounded-xl active:scale-95 transition-transform shadow-lg shadow-accent/20"
+                      >
+                        {t("buyNow")} · {product.priceSuffix ? `${isFa ? "از " : "from "}` : ""}{priceText}
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
