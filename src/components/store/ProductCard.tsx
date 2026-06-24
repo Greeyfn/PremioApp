@@ -71,17 +71,32 @@ export default function ProductCard({ product, onBuy }: Props) {
           className="p-3 flex flex-col gap-1.5 border-t border-white/10"
           style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(12px)" }}
         >
-          <p className="text-[10px] font-bold tracking-widest uppercase text-white/50">
-            {cat} · {tag}
+          <p className="text-[10px] font-bold text-white/50 flex items-center gap-1">
+            🚀 <span>{isFa ? "تحویل فوری" : "Instant Delivery"}</span>
           </p>
           <h3 className="text-sm font-bold text-white leading-snug line-clamp-2">
             {product.title}
           </h3>
-          <p className="text-accent font-bold text-sm mt-0.5" dir="ltr">
-            {isFa && tomanPrice
-              ? `${tomanPrice} تومان`
-              : `از $${product.price.toLocaleString()}`}
-          </p>
+
+          {/* Packages */}
+          {product.packages && product.packages.length > 0 ? (
+            <div className="flex flex-wrap gap-1 mt-0.5">
+              {product.packages.map((pkg) => (
+                <span
+                  key={pkg.id}
+                  className="text-[10px] px-2 py-0.5 rounded-full border border-accent/30 text-accent/80 bg-accent/10"
+                >
+                  {isFa ? pkg.nameFa : pkg.nameEn}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-accent font-bold text-sm mt-0.5" dir="ltr">
+              {isFa && tomanPrice
+                ? `${tomanPrice} تومان`
+                : `از $${product.price.toLocaleString()}`}
+            </p>
+          )}
         </div>
       </div>
     </button>
