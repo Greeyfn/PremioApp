@@ -25,6 +25,7 @@ export default function ProductSlider({ products, onBuy }: Props) {
   const { usdToTomanFormatted } = useCurrency();
   const [current, setCurrent] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [direction, setDirection] = useState<"left" | "right">("left");
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
@@ -35,8 +36,12 @@ export default function ProductSlider({ products, onBuy }: Props) {
   const resetAutoplay = useCallback(() => {
     if (autoplayRef.current) clearInterval(autoplayRef.current);
     autoplayRef.current = setInterval(() => {
+      setDirection("left");
       setIsTransitioning(true);
-      setCurrent((prev) => (prev + 1) % total);
+      setTimeout(() => {
+        setCurrent((prev) => (prev + 1) % total);
+        setIsTransitioning(false);
+      }, 400);
     }, AUTOPLAY_INTERVAL);
   }, [total]);
 
@@ -48,25 +53,23 @@ export default function ProductSlider({ products, onBuy }: Props) {
     };
   }, [total, resetAutoplay]);
 
-  useEffect(() => {
-    if (isTransitioning) {
-      const timer = setTimeout(() => setIsTransitioning(false), 500);
-      return () => clearTimeout(timer);
-    }
-  }, [isTransitioning, current]);
-
-  function goTo(index: number) {
+  function goTo(index: number, dir: "left" | "right" = "left") {
+    if (isTransitioning) return;
+    setDirection(dir);
     setIsTransitioning(true);
-    setCurrent(index);
+    setTimeout(() => {
+      setCurrent(index);
+      setIsTransitioning(false);
+    }, 400);
     resetAutoplay();
   }
 
   function goNext() {
-    goTo((current + 1) % total);
+    goTo((current + 1) % total, "left");
   }
 
   function goPrev() {
-    goTo((current - 1 + total) % total);
+    goTo((current - 1 + total) % total, "right");
   }
 
   function handleTouchStart(e: React.TouchEvent) {
@@ -83,6 +86,8 @@ export default function ProductSlider({ products, onBuy }: Props) {
       if (diff > 0) goNext();
       else goPrev();
     }
+    touchStartX.current = 0;
+    touchEndX.current = 0;
   }
 
   if (total === 0) return null;
@@ -104,8 +109,10 @@ export default function ProductSlider({ products, onBuy }: Props) {
       >
         {/* Slide Content */}
         <div
-          className={`relative border border-border rounded-2xl min-h-[220px] flex flex-col justify-between transition-all duration-500 overflow-hidden ${
-            isTransitioning ? "opacity-0 scale-[0.97]" : "opacity-100 scale-100"
+          className={`relative border border-border rounded-2xl min-h-[220px] flex flex-col justify-between overflow-hidden transition-all duration-400 ease-in-out ${
+            isTransitioning
+              ? `opacity-0 ${direction === "left" ? "-translate-x-6" : "translate-x-6"}`
+              : "opacity-100 translate-x-0"
           } ${hasImage ? "" : "bg-bg-card"}`}
         >
           {/* Animated Glow Line (Premium Shimmer) */}
