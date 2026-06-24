@@ -63,7 +63,7 @@ html, body {
   height: 200%;
   top: 50%;
   left: 50%;
-  animation: spin-border 8s linear infinite;
+  animation: spin-border 20s linear infinite;
 }
 
 @keyframes logo-glow {
