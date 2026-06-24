@@ -39,11 +39,12 @@ export default function ProductSlider({ products, onBuy }: Props) {
 
   // current real index for dots
   const current = total > 1 ? (index - 1 + total) % total : index;
+  const isJumping = useRef(false);
 
   const resetAutoplay = useCallback(() => {
     if (autoplayRef.current) clearInterval(autoplayRef.current);
     autoplayRef.current = setInterval(() => {
-      setIndex((prev) => prev + 1);
+      if (!isJumping.current) setIndex((prev) => prev + 1);
     }, AUTOPLAY_INTERVAL);
   }, []);
 
@@ -56,20 +57,20 @@ export default function ProductSlider({ products, onBuy }: Props) {
   // When we land on a clone, instantly jump to the real slide
   useEffect(() => {
     if (total <= 1) return;
-    if (index === 0) {
+    const lastIdx = slides.length - 1;
+
+    if (index === 0 || index === lastIdx) {
+      isJumping.current = true;
       const t = setTimeout(() => {
         setAnimated(false);
-        setIndex(total);
-        requestAnimationFrame(() => requestAnimationFrame(() => setAnimated(true)));
-      }, 500);
-      return () => clearTimeout(t);
-    }
-    if (index === slides.length - 1) {
-      const t = setTimeout(() => {
-        setAnimated(false);
-        setIndex(1);
-        requestAnimationFrame(() => requestAnimationFrame(() => setAnimated(true)));
-      }, 500);
+        setIndex(index === 0 ? total : 1);
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => {
+            setAnimated(true);
+            isJumping.current = false;
+          })
+        );
+      }, 520);
       return () => clearTimeout(t);
     }
   }, [index, slides.length, total]);
