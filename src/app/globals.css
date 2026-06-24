@@ -52,6 +52,15 @@ html, body {
   animation: shimmer-line 3s ease-in-out infinite;
 }
 
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 4s linear infinite;
+}
+
 @keyframes logo-glow {
   0%, 100% { filter: drop-shadow(0 0 6px rgba(232, 213, 176, 0.3)); }
   50% { filter: drop-shadow(0 0 14px rgba(232, 213, 176, 0.7)); }
