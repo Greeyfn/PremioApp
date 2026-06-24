@@ -364,17 +364,35 @@ export default function StorePage() {
         {categoryLoading && (
           <div className="absolute -top-1 left-0 h-0.5 bg-accent rounded-full animate-progress-bar z-10" key={progressKey} />
         )}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+        <div
+          className="flex overflow-x-auto scrollbar-hide bg-bg-elevated rounded-2xl p-1.5 gap-1 cursor-grab active:cursor-grabbing select-none"
+          style={{ WebkitOverflowScrolling: "touch" }}
+          onMouseDown={(e) => {
+            const el = e.currentTarget;
+            let startX = e.pageX - el.offsetLeft;
+            let scrollLeft = el.scrollLeft;
+            const onMove = (ev: MouseEvent) => {
+              const x = ev.pageX - el.offsetLeft;
+              el.scrollLeft = scrollLeft - (x - startX);
+            };
+            const onUp = () => {
+              window.removeEventListener("mousemove", onMove);
+              window.removeEventListener("mouseup", onUp);
+            };
+            window.addEventListener("mousemove", onMove);
+            window.addEventListener("mouseup", onUp);
+          }}
+        >
           {CATEGORIES.map((cat) => {
             const isActive = activeCategory === cat.id;
             return (
               <button
                 key={cat.id}
                 onClick={() => handleCategoryChange(cat.id)}
-                className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-semibold transition-all shrink-0 ${
+                className={`whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
                   isActive
                     ? "bg-accent text-bg-primary shadow-md"
-                    : "bg-bg-card border border-border text-text-secondary"
+                    : "text-text-muted hover:text-text-primary"
                 }`}
               >
                 {lang === "fa" ? cat.fa : cat.en}
