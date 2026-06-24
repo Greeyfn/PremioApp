@@ -193,10 +193,11 @@ export default function ProductSlider({ products, onBuy }: Props) {
                       )}
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between" dir="ltr">
                       <button
                         onClick={() => onBuy(product)}
                         className="bg-accent text-bg-primary text-xs font-bold px-5 py-2.5 rounded-xl active:scale-95 transition-transform shadow-lg shadow-accent/20"
+                        dir={isFa ? "rtl" : "ltr"}
                       >
                         {t("buyNow")} · {product.priceSuffix ? `${isFa ? "از" : "from"} ` : ""}{priceText}
                       </button>
