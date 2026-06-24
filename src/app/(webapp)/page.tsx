@@ -309,15 +309,22 @@ export default function StorePage() {
     const el = scrollRef.current;
     if (!el) return;
     const update = () => {
-      const { scrollLeft, scrollWidth, clientWidth } = el;
+      const { scrollWidth, clientWidth } = el;
+      const scrollLeft = Math.abs(el.scrollLeft);
+      const maxScroll = scrollWidth - clientWidth;
+      if (maxScroll <= 0) { setScrollThumb({ left: 0, width: 100 }); return; }
       const ratio = clientWidth / scrollWidth;
-      const thumbW = Math.max(ratio * 100, 20);
-      const thumbL = (scrollLeft / (scrollWidth - clientWidth)) * (100 - thumbW);
+      const thumbW = Math.max(ratio * 100, 15);
+      const thumbL = (scrollLeft / maxScroll) * (100 - thumbW);
       setScrollThumb({ left: thumbL, width: thumbW });
     };
     update();
-    el.addEventListener("scroll", update);
-    return () => el.removeEventListener("scroll", update);
+    el.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      el.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
   }, []);
   const [categoryLoading, setCategoryLoading] = useState(false);
   const [progressKey, setProgressKey] = useState(0);
