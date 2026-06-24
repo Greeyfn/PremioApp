@@ -51,9 +51,16 @@ export default function AppHeader() {
             </defs>
           </svg>
         </button>
-        <p className="font-bold text-text-primary text-sm">
-          {tgUser ? tgUser.first_name : "پریمیوشاپ"}
-        </p>
+        <div className="flex flex-col justify-center">
+          <p className="font-bold text-text-primary text-sm leading-none mb-0.5">
+            {tgUser ? tgUser.first_name : "پریمیوشاپ"}
+          </p>
+          {tgUser && (
+            <p className="text-text-muted text-xs leading-none" dir="ltr">
+              {tgUser.username ? `@${tgUser.username}` : `ID: ${tgUser.id}`}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Balance */}
