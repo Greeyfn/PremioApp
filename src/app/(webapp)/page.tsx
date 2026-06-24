@@ -273,12 +273,32 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
   },
 ];
 
+const CATEGORIES = [
+  { id: "all",       fa: "همه",         en: "All",        icon: "🛍️" },
+  { id: "ai",        fa: "هوش مصنوعی",  en: "AI",         icon: "🤖" },
+  { id: "music",     fa: "موسیقی",      en: "Music",      icon: "🎵" },
+  { id: "gaming",    fa: "گیمینگ",      en: "Gaming",     icon: "🎮" },
+  { id: "streaming", fa: "استریمینگ",   en: "Streaming",  icon: "🎬" },
+  { id: "design",    fa: "طراحی",       en: "Design",     icon: "🎨" },
+  { id: "software",  fa: "نرم‌افزار",   en: "Software",   icon: "💻" },
+];
+
+const CATEGORY_PRODUCT_MAP: Record<string, string[]> = {
+  ai:        ["demo-chatgpt", "demo-claude", "demo-gemini", "demo-midjourney", "demo-perplexity", "demo-notion"],
+  music:     ["demo-spotify"],
+  gaming:    ["demo-psplus", "demo-gamepass"],
+  streaming: ["demo-netflix", "demo-disney"],
+  design:    ["demo-canva", "demo-capcut", "demo-adobe"],
+  software:  ["demo-adobe", "demo-notion", "demo-canva"],
+};
+
 export default function StorePage() {
   const { t, lang } = useLanguage();
   const [products, setProducts] = useState<ProductWithStock[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<ProductWithStock | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
 
   useEffect(() => {
     fetch("/api/products")
@@ -293,10 +313,9 @@ export default function StorePage() {
 
   const filteredProducts = products.filter((p) => {
     const q = searchQuery.toLowerCase();
-    return (
-      p.title.toLowerCase().includes(q) ||
-      p.description.toLowerCase().includes(q)
-    );
+    const matchesSearch = p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
+    const matchesCategory = activeCategory === "all" || (CATEGORY_PRODUCT_MAP[activeCategory]?.includes(p.id) ?? false);
+    return matchesSearch && matchesCategory;
   });
 
   return (
@@ -315,7 +334,7 @@ export default function StorePage() {
       </h2>
 
       {/* Search Bar */}
-      <div className="relative mb-4">
+      <div className="relative mb-3">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <Search size={18} className="text-text-muted" />
         </div>
@@ -326,6 +345,27 @@ export default function StorePage() {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="block w-full pl-10 pr-3 py-2.5 border border-border rounded-xl leading-5 bg-bg-card text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent sm:text-sm transition-all shadow-sm"
         />
+      </div>
+
+      {/* Category Filter */}
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-4 pb-1">
+        {CATEGORIES.map((cat) => {
+          const isActive = activeCategory === cat.id;
+          return (
+            <button
+              key={cat.id}
+              onClick={() => setActiveCategory(cat.id)}
+              className={`flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-semibold transition-all shrink-0 ${
+                isActive
+                  ? "bg-accent text-bg-primary shadow-md"
+                  : "bg-bg-card border border-border text-text-secondary"
+              }`}
+            >
+              <span>{cat.icon}</span>
+              <span>{lang === "fa" ? cat.fa : cat.en}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Product Grid */}
