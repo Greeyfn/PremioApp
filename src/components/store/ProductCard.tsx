@@ -30,74 +30,54 @@ export default function ProductCard({ product, onBuy }: Props) {
     <button
       onClick={onBuy}
       disabled={product.stock === 0}
-      className="relative rounded-2xl overflow-hidden flex flex-col text-left w-full active:scale-95 transition-transform disabled:opacity-50 border border-white/10"
-      style={{ background: "rgba(255,255,255,0.04)" }}
+      className="bg-bg-card border border-border rounded-2xl overflow-hidden flex flex-col text-left w-full active:scale-95 transition-transform disabled:opacity-50"
     >
-      {/* Blurred background image */}
-      {product.imageUrl && (
-        <div className="absolute inset-0 z-0">
-          <img
+      {/* Image */}
+      <div className="relative w-full aspect-square bg-bg-elevated flex items-center justify-center overflow-hidden">
+        {product.imageUrl ? (
+          <Image
             src={product.imageUrl}
-            alt=""
-            className="w-full h-full object-cover scale-150 blur-2xl opacity-20"
+            alt={product.title}
+            fill
+            className="object-contain p-5"
           />
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
-      )}
+        ) : (
+          <div className="text-5xl">📦</div>
+        )}
+        {product.stock === 0 && (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+            <span className="text-white text-xs font-bold">ناموجود</span>
+          </div>
+        )}
+      </div>
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col w-full">
-        {/* Image */}
-        <div className="relative w-full aspect-square flex items-center justify-center overflow-hidden">
-          {product.imageUrl ? (
-            <Image
-              src={product.imageUrl}
-              alt={product.title}
-              fill
-              className="object-contain p-6 drop-shadow-2xl"
-            />
-          ) : (
-            <div className="text-5xl">📦</div>
-          )}
-          {product.stock === 0 && (
-            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-              <span className="text-white text-xs font-bold">ناموجود</span>
-            </div>
-          )}
-        </div>
+      {/* Info */}
+      <div className="p-3 flex flex-col gap-1.5">
+        <p className="text-[10px] font-bold text-white/50 flex items-center gap-1">
+          🚀 <span>{isFa ? "تحویل فوری" : "Instant Delivery"}</span>
+        </p>
+        <h3 className="text-sm font-bold text-text-primary leading-snug line-clamp-2">
+          {product.title}
+        </h3>
 
-        {/* Glass info panel */}
-        <div
-          className="p-3 flex flex-col gap-1.5 border-t border-white/10"
-          style={{ background: "rgba(255,255,255,0.05)", backdropFilter: "blur(12px)" }}
-        >
-          <p className="text-[10px] font-bold text-white/50 flex items-center gap-1">
-            🚀 <span>{isFa ? "تحویل فوری" : "Instant Delivery"}</span>
+        {product.packages && product.packages.length > 0 ? (
+          <div className="flex flex-wrap gap-1 mt-0.5">
+            {product.packages.map((pkg) => (
+              <span
+                key={pkg.id}
+                className="text-[10px] px-2 py-0.5 rounded-full border border-accent/30 text-accent/80 bg-accent/10"
+              >
+                {isFa ? pkg.nameFa : pkg.nameEn}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="text-accent font-bold text-sm mt-0.5" dir="ltr">
+            {isFa && tomanPrice
+              ? `${tomanPrice} تومان`
+              : `از $${product.price.toLocaleString()}`}
           </p>
-          <h3 className="text-sm font-bold text-white leading-snug line-clamp-2">
-            {product.title}
-          </h3>
-
-          {/* Packages */}
-          {product.packages && product.packages.length > 0 ? (
-            <div className="flex flex-wrap gap-1 mt-0.5">
-              {product.packages.map((pkg) => (
-                <span
-                  key={pkg.id}
-                  className="text-[10px] px-2 py-0.5 rounded-full border border-accent/30 text-accent/80 bg-accent/10"
-                >
-                  {isFa ? pkg.nameFa : pkg.nameEn}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <p className="text-accent font-bold text-sm mt-0.5" dir="ltr">
-              {isFa && tomanPrice
-                ? `${tomanPrice} تومان`
-                : `از $${product.price.toLocaleString()}`}
-            </p>
-          )}
-        </div>
+        )}
       </div>
     </button>
   );
