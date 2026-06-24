@@ -305,17 +305,23 @@ export default function StorePage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollThumb, setScrollThumb] = useState({ left: 0, width: 100 });
 
+  const isFaRef = useRef(false);
+  useEffect(() => { isFaRef.current = lang === "fa"; }, [lang]);
+
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     const update = () => {
       const { scrollWidth, clientWidth } = el;
-      const scrollLeft = Math.abs(el.scrollLeft);
       const maxScroll = scrollWidth - clientWidth;
       if (maxScroll <= 0) { setScrollThumb({ left: 0, width: 100 }); return; }
+      const scrollLeft = Math.abs(el.scrollLeft);
+      const progress = scrollLeft / maxScroll;
       const ratio = clientWidth / scrollWidth;
       const thumbW = Math.max(ratio * 100, 15);
-      const thumbL = (scrollLeft / maxScroll) * (100 - thumbW);
+      const thumbL = isFaRef.current
+        ? (100 - thumbW) * (1 - progress)
+        : progress * (100 - thumbW);
       setScrollThumb({ left: thumbL, width: thumbW });
     };
     update();
