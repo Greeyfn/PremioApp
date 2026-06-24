@@ -47,14 +47,9 @@ export default function AppHeader() {
             </defs>
           </svg>
         </Link>
-        <div className="flex flex-col justify-center">
-          <p className="font-bold text-text-primary text-sm leading-none mb-1">
-            {tgUser ? tgUser.first_name : "پریمیوشاپ"}
-          </p>
-          <p className="text-text-muted text-xs leading-none inline-block" dir="ltr">
-            {tgUser?.username ? `@${tgUser.username}` : "@premioshop"}
-          </p>
-        </div>
+        <p className="font-bold text-text-primary text-sm">
+          {tgUser ? tgUser.first_name : "پریمیوشاپ"}
+        </p>
       </div>
 
       {/* Balance */}
