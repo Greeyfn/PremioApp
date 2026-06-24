@@ -23,7 +23,13 @@ const AUTOPLAY_INTERVAL = 8000;
 export default function ProductSlider({ products, onBuy }: Props) {
   const { t, lang } = useLanguage();
   const { usdToTomanFormatted } = useCurrency();
-  const [current, setCurrent] = useState(0);
+  const isFa = lang === "fa";
+  const total = products.length;
+
+  // Infinite loop: [last, ...products, first]
+  const slides = total > 1 ? [products[total - 1], ...products, products[0]] : products;
+  const [index, setIndex] = useState(total > 1 ? 1 : 0);
+  const [animated, setAnimated] = useState(true);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const touchStartX = useRef(0);
@@ -31,15 +37,15 @@ export default function ProductSlider({ products, onBuy }: Props) {
   const isMouseDown = useRef(false);
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
 
-  const isFa = lang === "fa";
-  const total = products.length;
+  // current real index for dots
+  const current = total > 1 ? (index - 1 + total) % total : index;
 
   const resetAutoplay = useCallback(() => {
     if (autoplayRef.current) clearInterval(autoplayRef.current);
     autoplayRef.current = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % total);
+      setIndex((prev) => prev + 1);
     }, AUTOPLAY_INTERVAL);
-  }, [total]);
+  }, []);
 
   useEffect(() => {
     if (total <= 1) return;
@@ -47,13 +53,34 @@ export default function ProductSlider({ products, onBuy }: Props) {
     return () => { if (autoplayRef.current) clearInterval(autoplayRef.current); };
   }, [total, resetAutoplay]);
 
-  function goTo(index: number) {
-    setCurrent(index);
+  // When we land on a clone, instantly jump to the real slide
+  useEffect(() => {
+    if (total <= 1) return;
+    if (index === 0) {
+      const t = setTimeout(() => {
+        setAnimated(false);
+        setIndex(total);
+        requestAnimationFrame(() => requestAnimationFrame(() => setAnimated(true)));
+      }, 500);
+      return () => clearTimeout(t);
+    }
+    if (index === slides.length - 1) {
+      const t = setTimeout(() => {
+        setAnimated(false);
+        setIndex(1);
+        requestAnimationFrame(() => requestAnimationFrame(() => setAnimated(true)));
+      }, 500);
+      return () => clearTimeout(t);
+    }
+  }, [index, slides.length, total]);
+
+  function goTo(realIndex: number) {
+    setIndex(realIndex + 1);
     resetAutoplay();
   }
 
-  function goNext() { goTo((current + 1) % total); }
-  function goPrev() { goTo((current - 1 + total) % total); }
+  function goNext() { setIndex((prev) => prev + 1); resetAutoplay(); }
+  function goPrev() { setIndex((prev) => prev - 1); resetAutoplay(); }
 
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX;
@@ -62,13 +89,7 @@ export default function ProductSlider({ products, onBuy }: Props) {
   }
 
   function handleTouchMove(e: React.TouchEvent) {
-    const delta = e.touches[0].clientX - touchStartX.current;
-    // Resist at edges
-    if ((current === 0 && delta > 0) || (current === total - 1 && delta < 0)) {
-      setDragOffset(delta * 0.2);
-    } else {
-      setDragOffset(delta);
-    }
+    setDragOffset(e.touches[0].clientX - touchStartX.current);
   }
 
   function handleTouchEnd() {
@@ -88,12 +109,7 @@ export default function ProductSlider({ products, onBuy }: Props) {
 
   function handleMouseMove(e: React.MouseEvent) {
     if (!isMouseDown.current) return;
-    const delta = e.clientX - mouseStartX.current;
-    if ((current === 0 && delta > 0) || (current === total - 1 && delta < 0)) {
-      setDragOffset(delta * 0.2);
-    } else {
-      setDragOffset(delta);
-    }
+    setDragOffset(e.clientX - mouseStartX.current);
   }
 
   function handleMouseUp() {
@@ -135,10 +151,10 @@ export default function ProductSlider({ products, onBuy }: Props) {
           onMouseLeave={handleMouseUp}
         >
           <div
-            className={`flex ${isDragging ? "" : "transition-transform duration-500 ease-in-out"}`}
-            style={{ transform: `translateX(calc(-${current * 100}% + ${dragOffset}px))` }}
+            className={`flex ${isDragging || !animated ? "" : "transition-transform duration-500 ease-in-out"}`}
+            style={{ transform: `translateX(calc(-${index * 100}% + ${dragOffset}px))` }}
           >
-            {products.map((product) => {
+            {slides.map((product, slideIdx) => {
               const hasImage = !!product.imageUrl;
               const icon = CATEGORY_ICONS[product.category] ?? CATEGORY_ICONS.OTHER;
               const tomanPrice = usdToTomanFormatted(product.price);
@@ -147,7 +163,7 @@ export default function ProductSlider({ products, onBuy }: Props) {
 
               return (
                 <div
-                  key={product.id}
+                  key={`${product.id}-${slideIdx}`}
                   className={`relative min-w-full min-h-55 flex flex-col justify-between overflow-hidden ${hasImage ? "" : "bg-bg-card"}`}
                 >
                   {hasImage && (
