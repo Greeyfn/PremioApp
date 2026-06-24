@@ -26,7 +26,7 @@ export default function ProductCard({ product, onBuy }: Props) {
       className="bg-bg-card border border-border rounded-2xl overflow-hidden flex flex-col text-start w-full active:scale-95 transition-transform disabled:opacity-50"
     >
       {/* Image — white background like reference */}
-      <div className="relative w-full aspect-square bg-white flex items-center justify-center overflow-hidden">
+      <div className="relative w-full aspect-video bg-white flex items-center justify-center overflow-hidden">
         {product.imageUrl ? (
           <Image
             src={product.imageUrl}
