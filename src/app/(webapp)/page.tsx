@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Search, ShoppingBag } from "lucide-react";
 import ProductCard from "@/components/store/ProductCard";
 import ProductSlider from "@/components/store/ProductSlider";
@@ -302,6 +302,23 @@ export default function StorePage() {
   const [selectedProduct, setSelectedProduct] = useState<ProductWithStock | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrollThumb, setScrollThumb] = useState({ left: 0, width: 100 });
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const update = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = el;
+      const ratio = clientWidth / scrollWidth;
+      const thumbW = Math.max(ratio * 100, 20);
+      const thumbL = (scrollLeft / (scrollWidth - clientWidth)) * (100 - thumbW);
+      setScrollThumb({ left: thumbL, width: thumbW });
+    };
+    update();
+    el.addEventListener("scroll", update);
+    return () => el.removeEventListener("scroll", update);
+  }, []);
   const [categoryLoading, setCategoryLoading] = useState(false);
   const [progressKey, setProgressKey] = useState(0);
 
@@ -365,6 +382,7 @@ export default function StorePage() {
           <div className="absolute -top-1 left-0 h-0.5 bg-accent rounded-full animate-progress-bar z-10" key={progressKey} />
         )}
         <div
+          ref={scrollRef}
           className="flex overflow-x-auto scrollbar-hide gap-2 cursor-grab active:cursor-grabbing select-none"
           style={{ WebkitOverflowScrolling: "touch", paddingInlineEnd: "32px" }}
           onMouseDown={(e) => {
@@ -401,6 +419,15 @@ export default function StorePage() {
         </div>
         {/* Fade indicating more items */}
         <div className="absolute top-0 end-0 h-full w-10 pointer-events-none" style={{ background: "linear-gradient(to left, var(--color-bg-primary) 30%, transparent)" }} />
+        {/* Scroll indicator */}
+        {scrollThumb.width < 99 && (
+          <div className="relative h-0.5 bg-border rounded-full mt-2 mx-1">
+            <div
+              className="absolute top-0 h-full bg-accent rounded-full transition-all duration-150"
+              style={{ left: `${scrollThumb.left}%`, width: `${scrollThumb.width}%` }}
+            />
+          </div>
+        )}
       </div>
 
       {/* Product Grid */}
