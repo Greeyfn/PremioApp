@@ -520,7 +520,7 @@ export default function StorePage() {
                         <span className="text-xs font-bold text-accent truncate">
                           {usdToTomanFormatted(product.price)}
                         </span>
-                        <span className="text-[9px] text-text-muted shrink-0">ت</span>
+                        <span className="text-[9px] text-text-muted shrink-0">تومان</span>
                       </div>
                     ) : (
                       <span className="text-xs font-bold text-accent" dir="ltr">
