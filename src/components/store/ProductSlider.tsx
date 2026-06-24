@@ -79,13 +79,9 @@ export default function ProductSlider({ products, onBuy }: Props) {
       >
         {/* Rotating sweep */}
         <div
-          className="animate-spin-border absolute z-0"
+          className="animate-spin-border z-0"
           style={{
-            width: "200%",
-            height: "200%",
-            top: "-50%",
-            left: "-50%",
-            background: "conic-gradient(from 0deg, transparent 0%, transparent 70%, #f5e8c8 82%, #e8d5b0 88%, #f5e8c8 94%, transparent 100%)",
+            background: "conic-gradient(from 0deg, rgba(232,213,176,0.15) 0%, rgba(232,213,176,0.15) 50%, #e8d5b0 70%, #fff8ee 85%, #e8d5b0 100%)",
           }}
         />
         {/* Slider track */}
