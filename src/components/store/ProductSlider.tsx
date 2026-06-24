@@ -201,11 +201,11 @@ export default function ProductSlider({ products, onBuy }: Props) {
                     </p>
                     {/* Features — 4 tags */}
                     {features.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mb-2.5">
+                      <div className="grid grid-cols-2 gap-1 mb-2.5">
                         {features.slice(0, 4).map((f, i) => (
                           <span key={i} className="inline-flex items-center gap-1 text-[9px] text-white/80 bg-white/10 backdrop-blur-sm px-1.5 py-0.5 rounded-full">
-                            <Truck size={7} className="text-accent" />
-                            <span className="line-clamp-1 max-w-20">{f}</span>
+                            <Truck size={7} className="text-accent shrink-0" />
+                            <span className="truncate">{f}</span>
                           </span>
                         ))}
                       </div>
