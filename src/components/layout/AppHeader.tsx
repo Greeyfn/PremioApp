@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useAppStore } from "@/lib/store";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -26,7 +27,12 @@ export default function AppHeader() {
     <header className="sticky top-0 z-40 bg-bg-primary/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center gap-3">
       {/* Logo & title */}
       <div className="flex items-center gap-3 flex-1">
-        <div className="w-10 h-10 rounded-full overflow-hidden bg-black flex items-center justify-center p-2">
+        <Link
+          href="https://t.me/premioshop"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-10 h-10 rounded-full overflow-hidden bg-black flex items-center justify-center p-2 animate-logo"
+        >
           <svg viewBox="0 0 472 844" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
             <g clipPath="url(#clip0_110_176)">
               <path d="M193.609 0C191.107 0 188.615 0.039957 186.133 0.109882C186.074 4.56509 182.455 8.16123 178 8.16123V137.942C183.123 137.362 188.336 137.053 193.609 137.053C269.671 137.053 331.329 198.846 331.329 275.074C331.329 351.302 269.671 413.096 193.609 413.096C188.326 413.096 183.123 412.786 178 412.207V549.699C182.495 549.699 186.143 553.355 186.143 557.86C186.143 557.86 186.143 557.87 186.143 557.88C188.625 557.95 191.117 557.99 193.609 557.99C347.357 557.99 472 433.074 472 278.99C472 124.906 347.357 0 193.609 0Z" fill="white"/>
@@ -38,7 +44,7 @@ export default function AppHeader() {
               </clipPath>
             </defs>
           </svg>
-        </div>
+        </Link>
         <div className="flex flex-col justify-center">
           <p className="font-bold text-text-primary text-sm leading-none mb-1">پریمیوشاپ</p>
           <p className="text-text-muted text-xs leading-none inline-block" dir="ltr">@premioshop</p>
