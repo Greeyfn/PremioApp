@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "**.telegram.org" },
       { protocol: "https", hostname: "t.me" },
+      { protocol: "https", hostname: "upload.wikimedia.org" },
+      { protocol: "https", hostname: "**.wikimedia.org" },
     ],
   },
   async headers() {
