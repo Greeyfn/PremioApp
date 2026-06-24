@@ -4,11 +4,30 @@ import { validateTelegramWebAppData, parseTelegramInitData } from "@/lib/telegra
 
 export async function POST(req: NextRequest) {
   try {
-    const { initData } = await req.json();
+    const body = await req.json();
+    const isDev = process.env.NODE_ENV === "development";
+
+    // Dev mode: bypass Telegram auth with a fixed telegramId
+    if (isDev && body.devMode && body.telegramId) {
+      const user = await prisma.user.findUnique({
+        where: { telegramId: BigInt(body.telegramId) },
+      });
+      if (!user) return NextResponse.json({ error: "Dev user not found" }, { status: 404 });
+      return NextResponse.json({
+        user: {
+          id: user.id,
+          balance: user.balance,
+          language: user.language,
+          hideBalance: user.hideBalance,
+          pushNotify: user.pushNotify,
+          referralCode: user.referralCode,
+        },
+      });
+    }
+
+    const { initData } = body;
     if (!initData) return NextResponse.json({ error: "No initData" }, { status: 400 });
 
-    // In dev allow bypass
-    const isDev = process.env.NODE_ENV === "development";
     if (!isDev && !validateTelegramWebAppData(initData)) {
       return NextResponse.json({ error: "Invalid initData" }, { status: 401 });
     }

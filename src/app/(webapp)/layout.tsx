@@ -17,11 +17,19 @@ export default function WebAppLayout({
   const isRtl = lang === "fa";
 
   useEffect(() => {
-    if (!user) return;
+    const isDev = process.env.NODE_ENV === "development";
+    const payload = user
+      ? JSON.stringify({ initData })
+      : isDev
+      ? JSON.stringify({ devMode: true, telegramId: 109711635 })
+      : null;
+
+    if (!payload) return;
+
     fetch("/api/auth/telegram", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ initData }),
+      body: payload,
     })
       .then((r) => r.json())
       .then((data) => {
