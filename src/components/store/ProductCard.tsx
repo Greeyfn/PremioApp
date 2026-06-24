@@ -67,7 +67,7 @@ export default function ProductCard({ product, onBuy }: Props) {
         )}
 
         {/* Price */}
-        <p className="text-accent font-black text-base mt-0.5" dir="ltr">
+        <p className="text-accent font-bold text-xs mt-0.5" dir="ltr">
           {product.packages && product.packages.length > 0
             ? `${isFa ? "از " : "from "}${priceDisplay}`
             : priceDisplay}
