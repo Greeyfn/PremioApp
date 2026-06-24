@@ -165,7 +165,7 @@ export default function ProductSlider({ products, onBuy }: Props) {
               return (
                 <div
                   key={`${product.id}-${slideIdx}`}
-                  className={`relative min-w-full min-h-55 flex flex-col justify-between overflow-hidden ${hasImage ? "" : "bg-bg-card"}`}
+                  className={`relative min-w-full min-h-40 flex flex-col justify-between overflow-hidden ${hasImage ? "" : "bg-bg-card"}`}
                 >
                   {hasImage && (
                     <>
