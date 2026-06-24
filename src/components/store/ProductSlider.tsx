@@ -161,7 +161,7 @@ export default function ProductSlider({ products, onBuy }: Props) {
                     </>
                   )}
 
-                  <div className="relative z-10 p-5 pb-4 flex flex-col justify-between flex-1">
+                  <div className="relative z-10 p-5 pb-4 flex flex-col justify-between flex-1" dir={isFa ? "rtl" : "ltr"}>
                     <div className="flex items-center gap-2 mb-3">
                       <span className="inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/20">
                         {icon}
