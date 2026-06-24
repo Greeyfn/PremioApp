@@ -342,10 +342,7 @@ export default function StorePage() {
         />
       )}
 
-      {/* Section Title */}
-      <h2 className="text-xl font-bold text-center mb-4 text-text-primary italic">
-        {t("allProducts")}
-      </h2>
+
 
       {/* Search Bar */}
       <div className="relative mb-3">
