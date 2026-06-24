@@ -191,7 +191,7 @@ export default function ProductSlider({ products, onBuy }: Props) {
                       )}
                     </div>
 
-                    {/* Bottom: title + desc + button */}
+                    {/* Bottom: title + desc + features + button */}
                     <div>
                       <h3 className="text-xl font-bold text-white leading-tight line-clamp-2 drop-shadow-lg mb-1.5">
                         {product.title}
@@ -199,6 +199,16 @@ export default function ProductSlider({ products, onBuy }: Props) {
                       <p className="text-xs text-white/70 leading-relaxed line-clamp-2 mb-3 drop-shadow">
                         {product.description}
                       </p>
+                      {features.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mb-3">
+                          {features.slice(0, 3).map((f, i) => (
+                            <span key={i} className="inline-flex items-center gap-1 text-[10px] text-white/80 bg-white/10 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                              <Truck size={9} className="text-accent" />
+                              <span className="line-clamp-1 max-w-30">{f}</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
                       <button
                         onClick={() => onBuy(product)}
                         className="bg-accent text-bg-primary text-xs font-bold px-5 py-2.5 rounded-xl active:scale-95 transition-transform shadow-lg shadow-accent/20"
