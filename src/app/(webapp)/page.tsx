@@ -395,10 +395,6 @@ export default function StorePage() {
           ))}
         </div>
       ) : activeCategory === "all" ? (
-        <div className="flex flex-col gap-3">
-          <h2 className="text-3xl font-black italic text-text-primary text-center py-2">
-            {lang === "fa" ? "همه محصولات" : "All products"}
-          </h2>
         <div className="grid grid-cols-2 gap-3">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
@@ -413,7 +409,6 @@ export default function StorePage() {
               {lang === "fa" ? "محصولی پیدا نشد." : "No products found."}
             </div>
           )}
-        </div>
         </div>
       ) : (
         <div className="flex flex-col gap-3">
