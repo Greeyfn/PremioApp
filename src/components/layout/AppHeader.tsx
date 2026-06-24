@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useAppStore } from "@/lib/store";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useTelegram } from "@/hooks/useTelegram";
 import type { Lang } from "@/lib/translations";
 
 const LANGS: { code: Lang; label: string }[] = [
@@ -12,6 +13,7 @@ const LANGS: { code: Lang; label: string }[] = [
 
 export default function AppHeader() {
   const { lang, setLang } = useLanguage();
+  const { user: tgUser } = useTelegram();
   const { usdToTomanFormatted } = useCurrency();
   const balance = useAppStore((s) => s.balance);
   const hideBalance = useAppStore((s) => s.hideBalance);
@@ -46,8 +48,12 @@ export default function AppHeader() {
           </svg>
         </Link>
         <div className="flex flex-col justify-center">
-          <p className="font-bold text-text-primary text-sm leading-none mb-1">پریمیوشاپ</p>
-          <p className="text-text-muted text-xs leading-none inline-block" dir="ltr">@premioshop</p>
+          <p className="font-bold text-text-primary text-sm leading-none mb-1">
+            {tgUser ? tgUser.first_name : "پریمیوشاپ"}
+          </p>
+          <p className="text-text-muted text-xs leading-none inline-block" dir="ltr">
+            {tgUser?.username ? `@${tgUser.username}` : "@premioshop"}
+          </p>
         </div>
       </div>
 
