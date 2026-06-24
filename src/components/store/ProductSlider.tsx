@@ -73,16 +73,19 @@ export default function ProductSlider({ products, onBuy }: Props) {
   return (
     <div className="mb-5">
       {/* Glow border wrapper */}
-      <div className="relative rounded-2xl p-[2px] overflow-hidden shadow-[0_0_24px_4px_rgba(232,213,176,0.2)]">
-        {/* Rotating conic glow border */}
+      <div
+        className="relative rounded-2xl p-[2px] overflow-hidden"
+        style={{ boxShadow: "0 0 0 1px rgba(232,213,176,0.5), 0 0 20px 4px rgba(232,213,176,0.25)" }}
+      >
+        {/* Rotating sweep */}
         <div
           className="animate-spin-border absolute z-0"
           style={{
-            width: "300%",
-            height: "300%",
-            top: "50%",
-            left: "50%",
-            background: "conic-gradient(from 0deg, transparent 0deg, #e8d5b0 60deg, #f5e8c8 90deg, #e8d5b0 120deg, transparent 180deg, transparent 240deg, #e8d5b0 300deg, #f5e8c8 330deg, transparent 360deg)",
+            width: "200%",
+            height: "200%",
+            top: "-50%",
+            left: "-50%",
+            background: "conic-gradient(from 0deg, transparent 0%, transparent 70%, #f5e8c8 82%, #e8d5b0 88%, #f5e8c8 94%, transparent 100%)",
           }}
         />
         {/* Slider track */}

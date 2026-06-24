@@ -53,12 +53,11 @@ html, body {
 }
 
 @keyframes spin-border {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to   { transform: translate(-50%, -50%) rotate(360deg); }
+  to { transform: rotate(360deg); }
 }
 
 .animate-spin-border {
-  animation: spin-border 4s linear infinite;
+  animation: spin-border 3s linear infinite;
 }
 
 @keyframes logo-glow {
