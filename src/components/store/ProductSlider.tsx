@@ -27,6 +27,8 @@ export default function ProductSlider({ products, onBuy }: Props) {
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const touchStartX = useRef(0);
+  const mouseStartX = useRef(0);
+  const isMouseDown = useRef(false);
   const autoplayRef = useRef<NodeJS.Timeout | null>(null);
 
   const isFa = lang === "fa";
@@ -77,6 +79,33 @@ export default function ProductSlider({ products, onBuy }: Props) {
     resetAutoplay();
   }
 
+  function handleMouseDown(e: React.MouseEvent) {
+    isMouseDown.current = true;
+    mouseStartX.current = e.clientX;
+    setIsDragging(true);
+    if (autoplayRef.current) clearInterval(autoplayRef.current);
+  }
+
+  function handleMouseMove(e: React.MouseEvent) {
+    if (!isMouseDown.current) return;
+    const delta = e.clientX - mouseStartX.current;
+    if ((current === 0 && delta > 0) || (current === total - 1 && delta < 0)) {
+      setDragOffset(delta * 0.2);
+    } else {
+      setDragOffset(delta);
+    }
+  }
+
+  function handleMouseUp() {
+    if (!isMouseDown.current) return;
+    isMouseDown.current = false;
+    setIsDragging(false);
+    if (dragOffset < -60) goNext();
+    else if (dragOffset > 60) goPrev();
+    setDragOffset(0);
+    resetAutoplay();
+  }
+
   if (total === 0) return null;
 
   return (
@@ -96,10 +125,14 @@ export default function ProductSlider({ products, onBuy }: Props) {
         {/* Slider track */}
         <div
           dir="ltr"
-          className="relative z-10 overflow-hidden rounded-[14px] bg-bg-primary"
+          className="relative z-10 overflow-hidden rounded-[14px] bg-bg-primary select-none cursor-grab active:cursor-grabbing"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
         >
           <div
             className={`flex ${isDragging ? "" : "transition-transform duration-500 ease-in-out"}`}
