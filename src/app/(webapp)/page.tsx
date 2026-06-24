@@ -284,6 +284,16 @@ const CATEGORIES = [
   { id: "software",  fa: "نرم‌افزار",   en: "Software"   },
 ];
 
+function getAccountTypeLabel(product: ProductWithStock): string {
+  const t = product.title + " " + (product.description ?? "");
+  if (t.includes("اکانت آماده") || t.includes("ایمیل آماده")) {
+    if (t.includes("شخصی")) return "اکانت شخصی و اکانت آماده";
+    return "✅ اکانت آماده";
+  }
+  if (t.includes("شخصی")) return "اکانت شخصی";
+  return "اکانت اشتراکی";
+}
+
 const CATEGORY_PRODUCT_MAP: Record<string, string[]> = {
   ai:        ["demo-chatgpt", "demo-claude", "demo-gemini", "demo-midjourney", "demo-perplexity", "demo-notion"],
   music:     ["demo-spotify"],
@@ -502,8 +512,8 @@ export default function StorePage() {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0 flex flex-col gap-1">
-                  <p className="text-[8px] font-semibold tracking-[0.1em] uppercase text-text-muted">
-                    {product.category}{product.tag ? ` · ${product.tag}` : ""}
+                  <p className="text-[8px] font-semibold text-text-muted">
+                    {getAccountTypeLabel(product)}
                   </p>
                   <h3 className="text-xs font-bold text-text-primary leading-snug line-clamp-2">
                     {product.title}
@@ -516,20 +526,25 @@ export default function StorePage() {
                   {/* Price + Buy */}
                   <div className="flex items-center justify-between gap-1 mt-0.5">
                     {isFa ? (
-                      <div dir="ltr" className="flex items-baseline gap-0.5 min-w-0">
-                        <span className="text-xs font-bold text-accent truncate">
-                          {usdToTomanFormatted(product.price)}
-                        </span>
-                        <span className="text-[9px] text-text-muted shrink-0">تومان</span>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-[8px] text-text-muted">شروع قیمت از</span>
+                        <div dir="ltr" className="flex items-baseline gap-0.5 min-w-0">
+                          <span className="text-xs font-bold text-accent truncate">
+                            {usdToTomanFormatted(product.price)}
+                          </span>
+                        </div>
                       </div>
                     ) : (
-                      <span className="text-xs font-bold text-accent" dir="ltr">
-                        ${product.price}
-                      </span>
+                      <div className="flex flex-col">
+                        <span className="text-[8px] text-text-muted">starting from</span>
+                        <span className="text-xs font-bold text-accent" dir="ltr">
+                          ${product.price}
+                        </span>
+                      </div>
                     )}
                     <div className="shrink-0 flex items-center gap-1 bg-accent text-bg-primary text-[10px] font-bold px-2.5 py-1 rounded-lg">
                       <ShoppingBag size={10} strokeWidth={2.5} />
-                      <span>{isFa ? "خرید" : "Buy"}</span>
+                      <span>{isFa ? "اطلاعات بیشتر و خرید" : "Details & Buy"}</span>
                     </div>
                   </div>
                 </div>
