@@ -178,45 +178,40 @@ export default function ProductSlider({ products, onBuy }: Props) {
                     </>
                   )}
 
-                  <div className="relative z-10 p-4 flex flex-col justify-between flex-1" dir={isFa ? "rtl" : "ltr"}>
-                    {/* Top: tag */}
-                    <div className="flex items-center gap-1.5">
-                      <span className="inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/20">
-                        {icon} {product.category}
+                  {/* Tag — top */}
+                  <div className="absolute top-3 start-3 z-10 flex items-center gap-1.5" dir={isFa ? "rtl" : "ltr"}>
+                    <span className="inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/20">
+                      {icon} {product.category}
+                    </span>
+                    {product.tag && (
+                      <span className="text-[10px] text-white/70 bg-white/10 backdrop-blur-sm px-2 py-1 rounded-full">
+                        {product.tag}
                       </span>
-                      {product.tag && (
-                        <span className="text-[10px] text-white/70 bg-white/10 backdrop-blur-sm px-2 py-1 rounded-full">
-                          {product.tag}
-                        </span>
-                      )}
-                    </div>
+                    )}
+                  </div>
 
-                    {/* Bottom: title + desc + features + button */}
-                    <div>
-                      <h3 className="text-xl font-bold text-white leading-tight line-clamp-2 drop-shadow-lg mb-1.5">
-                        {product.title}
-                      </h3>
-                      <p className="text-xs text-white/70 leading-relaxed line-clamp-2 mb-3 drop-shadow">
-                        {product.description}
-                      </p>
-                      {features.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 mb-3">
-                          {features.slice(0, 3).map((f, i) => (
-                            <span key={i} className="inline-flex items-center gap-1 text-[10px] text-white/80 bg-white/10 backdrop-blur-sm px-2 py-0.5 rounded-full">
-                              <Truck size={9} className="text-accent" />
-                              <span className="line-clamp-1 max-w-30">{f}</span>
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      <button
-                        onClick={() => onBuy(product)}
-                        className="bg-accent text-bg-primary text-xs font-bold px-5 py-2.5 rounded-xl active:scale-95 transition-transform shadow-lg shadow-accent/20"
-                        dir={isFa ? "rtl" : "ltr"}
-                      >
-                        {t("buyNow")} · {product.priceSuffix ? `${isFa ? "از " : "from "}` : ""}{priceText}
-                      </button>
-                    </div>
+                  {/* Bottom — always pinned */}
+                  <div className="absolute bottom-0 start-0 end-0 z-10 p-4" dir={isFa ? "rtl" : "ltr"}>
+                    <h3 className="text-lg font-bold text-white leading-tight line-clamp-1 drop-shadow-lg mb-1">
+                      {product.title}
+                    </h3>
+                    {features.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-2.5">
+                        {features.slice(0, 2).map((f, i) => (
+                          <span key={i} className="inline-flex items-center gap-1 text-[10px] text-white/80 bg-white/10 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                            <Truck size={9} className="text-accent" />
+                            <span className="line-clamp-1 max-w-28">{f}</span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <button
+                      onClick={() => onBuy(product)}
+                      className="bg-accent text-bg-primary text-xs font-bold px-5 py-2 rounded-xl active:scale-95 transition-transform shadow-lg shadow-accent/20"
+                      dir="ltr"
+                    >
+                      {t("buyNow")} · {product.priceSuffix ? `${isFa ? "از " : "from "}` : ""}{priceText}
+                    </button>
                   </div>
                 </div>
               );
