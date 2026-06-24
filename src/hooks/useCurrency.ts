@@ -2,87 +2,72 @@
 import { useEffect, useState } from "react";
 
 interface CurrencyRate {
-  toman: number;  // e.g. 161600
-  rate: number;   // e.g. 1616000 (Rial)
+  toman: number;
+  rate: number;
   updatedAt: string;
 }
 
-/**
- * Hook to fetch and cache the USD→Toman exchange rate on the client side.
- * Fetches from /api/currency which itself caches from alanchand.com.
- * Re-fetches every 5 minutes.
- */
+// Singleton: shared across all hook instances
+let cachedRate: CurrencyRate | null = null;
+let fetchPromise: Promise<void> | null = null;
+let lastFetchTime = 0;
+const CACHE_MS = 5 * 60 * 1000;
+const listeners = new Set<() => void>();
+
+function notify() {
+  listeners.forEach((fn) => fn());
+}
+
+async function fetchRate() {
+  const now = Date.now();
+  if (cachedRate && now - lastFetchTime < CACHE_MS) return;
+  if (fetchPromise) return fetchPromise;
+
+  fetchPromise = fetch("/api/currency")
+    .then((r) => r.json())
+    .then((data) => {
+      cachedRate = data;
+      lastFetchTime = Date.now();
+      notify();
+    })
+    .catch(() => {})
+    .finally(() => { fetchPromise = null; });
+
+  return fetchPromise;
+}
+
 export function useCurrency() {
-  const [currencyRate, setCurrencyRate] = useState<CurrencyRate | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [, rerender] = useState(0);
 
   useEffect(() => {
-    let mounted = true;
-
-    async function fetchRate() {
-      try {
-        const res = await fetch("/api/currency");
-        if (!res.ok) throw new Error("Failed");
-        const data = await res.json();
-        if (mounted) {
-          setCurrencyRate(data);
-        }
-      } catch (err) {
-        console.warn("Failed to fetch currency rate:", err);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    }
-
+    const listener = () => rerender((n) => n + 1);
+    listeners.add(listener);
     fetchRate();
 
-    // Refresh rate every 5 minutes
-    const interval = setInterval(fetchRate, 5 * 60 * 1000);
-
+    const interval = setInterval(fetchRate, CACHE_MS);
     return () => {
-      mounted = false;
+      listeners.delete(listener);
       clearInterval(interval);
     };
   }, []);
 
-  /**
-   * Convert USD to Toman
-   */
   function toToman(usdAmount: number): number | null {
-    if (!currencyRate) return null;
-    return Math.round(usdAmount * currencyRate.toman);
+    if (!cachedRate) return null;
+    return Math.round(usdAmount * cachedRate.toman);
   }
 
-  /**
-   * Format a Toman value with commas (Persian digits)
-   */
-  function formatToman(toman: number): string {
-    return toman.toLocaleString("fa-IR");
-  }
-
-  /**
-   * Format a Toman value with commas (Latin digits)
-   */
-  function formatTomanLatin(toman: number): string {
-    return toman.toLocaleString("en-US");
-  }
-
-  /**
-   * Get formatted Toman string from USD amount
-   * Returns null if rate isn't loaded yet
-   */
   function usdToTomanFormatted(usdAmount: number, usePersianDigits = false): string | null {
     const toman = toToman(usdAmount);
     if (toman === null) return null;
-    return usePersianDigits ? formatToman(toman) : formatTomanLatin(toman);
+    return usePersianDigits
+      ? toman.toLocaleString("fa-IR")
+      : toman.toLocaleString("en-US");
   }
 
   return {
-    currencyRate,
-    loading,
+    currencyRate: cachedRate,
+    loading: !cachedRate,
     toToman,
-    formatToman,
-    formatTomanLatin,
     usdToTomanFormatted,
   };
 }
