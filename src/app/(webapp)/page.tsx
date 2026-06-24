@@ -439,7 +439,15 @@ export default function StorePage() {
           })}
         </div>
         {/* Fade indicating more items */}
-        <div className="absolute top-0 end-0 h-full w-10 pointer-events-none" style={{ background: "linear-gradient(to left, var(--color-bg-primary) 30%, transparent)" }} />
+        <div
+          className="absolute top-0 h-full w-10 pointer-events-none"
+          style={{
+            insetInlineEnd: 0,
+            background: isFa
+              ? "linear-gradient(to right, var(--color-bg-primary) 30%, transparent)"
+              : "linear-gradient(to left, var(--color-bg-primary) 30%, transparent)",
+          }}
+        />
         {/* Scroll indicator */}
         {scrollThumb.width < 99 && (
           <div className="relative h-0.5 bg-border rounded-full mt-2 mx-1">
