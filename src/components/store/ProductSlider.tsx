@@ -73,12 +73,19 @@ export default function ProductSlider({ products, onBuy }: Props) {
   return (
     <div className="mb-5">
       {/* Glow border wrapper */}
-      <div className="relative rounded-2xl p-[1.5px] overflow-hidden shadow-[0_0_20px_3px_rgba(232,213,176,0.3)]">
-        {/* Rotating conic glow */}
-        <div className="animate-spin-slow absolute inset-[-50%] z-0" style={{background: "conic-gradient(from 0deg, transparent 0deg, #e8d5b0 90deg, transparent 180deg, #e8d5b0 270deg, transparent 360deg)"}} />
+      <div className="relative rounded-2xl p-[2px] overflow-hidden shadow-[0_0_24px_4px_rgba(232,213,176,0.25)]">
+        {/* Rotating conic glow border */}
+        <div
+          className="animate-spin-slow absolute z-0"
+          style={{
+            inset: "-100%",
+            background: "conic-gradient(from 0deg, transparent 60deg, #e8d5b0 120deg, transparent 180deg, transparent 240deg, #e8d5b0 300deg, transparent 360deg)",
+          }}
+        />
         {/* Slider track */}
         <div
-          className="relative z-10 overflow-hidden rounded-2xl"
+          dir="ltr"
+          className="relative z-10 overflow-hidden rounded-[14px] bg-bg-primary"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
