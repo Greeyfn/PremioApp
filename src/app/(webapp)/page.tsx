@@ -359,13 +359,13 @@ export default function StorePage() {
       </div>
 
       {/* Category Filter */}
-      <div className="relative mb-4">
+      <div className="relative mb-4 after:absolute after:top-0 after:inset-e-0 after:h-full after:w-8 after:bg-linear-to-l after:from-bg-primary after:to-transparent after:pointer-events-none after:rounded-e-2xl after:z-10">
         {/* Progress bar */}
         {categoryLoading && (
           <div className="absolute -top-1 left-0 h-0.5 bg-accent rounded-full animate-progress-bar z-10" key={progressKey} />
         )}
         <div
-          className="flex overflow-x-auto scrollbar-hide bg-bg-elevated rounded-2xl p-1.5 gap-1 cursor-grab active:cursor-grabbing select-none"
+          className="flex overflow-x-auto scrollbar-hide bg-bg-elevated rounded-2xl p-1.5 pe-6 gap-1 cursor-grab active:cursor-grabbing select-none"
           style={{ WebkitOverflowScrolling: "touch" }}
           onMouseDown={(e) => {
             const el = e.currentTarget;
