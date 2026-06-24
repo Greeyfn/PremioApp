@@ -52,6 +52,16 @@ html, body {
   color: #1a1a1a;
 }
 
+.slider-title {
+  font-size: 16px;
+}
+
+@media (max-width: 389px) {
+  .slider-title {
+    font-size: 13px;
+  }
+}
+
 @media (max-width: 389px) {
   .hide-on-small {
     display: none !important;

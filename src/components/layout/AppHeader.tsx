@@ -24,8 +24,8 @@ export default function AppHeader() {
 
   const balanceToman = usdToTomanFormatted(balance);
   const balanceDisplay = isFa && balanceToman
-    ? `${balanceToman} تومان`
-    : `$${balance.toFixed(2)}`;
+    ? `${balanceToman} ت`
+    : `$${balance.toFixed(0)}`;
 
   return (
     <header className="sticky top-0 z-40 bg-bg-primary/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center gap-3">

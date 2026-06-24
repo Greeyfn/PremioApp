@@ -178,41 +178,42 @@ export default function ProductSlider({ products, onBuy }: Props) {
                     </>
                   )}
 
-                  {/* Top section: tag + title + desc + features */}
-                  <div className="absolute top-0 start-0 end-0 z-10 p-4" dir={isFa ? "rtl" : "ltr"}>
-                    <div className="flex items-center gap-1.5 mb-2">
-                      <span className="inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/20">
+                  {/* All content — bottom aligned */}
+                  <div className="absolute bottom-0 start-0 end-0 z-10 p-3" dir={isFa ? "rtl" : "ltr"}>
+                    {/* Tag */}
+                    <div className="flex items-center gap-1.5 mb-1.5">
+                      <span className="inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-full border border-white/20">
                         {icon} {product.category}
                       </span>
                       {product.tag && (
-                        <span className="text-[10px] text-white/70 bg-white/10 backdrop-blur-sm px-2 py-1 rounded-full">
+                        <span className="text-[9px] text-white/70 bg-white/10 backdrop-blur-sm px-2 py-0.5 rounded-full">
                           {product.tag}
                         </span>
                       )}
                     </div>
-                    <h3 className="text-lg font-bold text-white leading-tight line-clamp-1 drop-shadow-lg mb-1">
+                    {/* Title */}
+                    <h3 className="slider-title font-bold text-white leading-tight line-clamp-1 drop-shadow-lg mb-1">
                       {product.title}
                     </h3>
-                    <p className="text-[11px] text-white/70 line-clamp-1 mb-1.5">
+                    {/* Description */}
+                    <p className="text-[10px] text-white/70 line-clamp-1 mb-1.5">
                       {product.description}
                     </p>
+                    {/* Features — 4 tags */}
                     {features.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {features.slice(0, 2).map((f, i) => (
-                          <span key={i} className="inline-flex items-center gap-1 text-[9px] text-white/80 bg-white/10 backdrop-blur-sm px-2 py-0.5 rounded-full">
-                            <Truck size={8} className="text-accent" />
-                            <span className="line-clamp-1 max-w-24">{f}</span>
+                      <div className="flex flex-wrap gap-1 mb-2.5">
+                        {features.slice(0, 4).map((f, i) => (
+                          <span key={i} className="inline-flex items-center gap-1 text-[9px] text-white/80 bg-white/10 backdrop-blur-sm px-1.5 py-0.5 rounded-full">
+                            <Truck size={7} className="text-accent" />
+                            <span className="line-clamp-1 max-w-20">{f}</span>
                           </span>
                         ))}
                       </div>
                     )}
-                  </div>
-
-                  {/* Buy button — bottom left */}
-                  <div className="absolute bottom-3 start-4 z-10">
+                    {/* Buy button — left */}
                     <button
                       onClick={() => onBuy(product)}
-                      className="bg-accent text-bg-primary text-xs font-bold px-5 py-2 rounded-xl active:scale-95 transition-transform shadow-lg shadow-accent/20"
+                      className="bg-accent text-bg-primary text-[11px] font-bold px-4 py-1.5 rounded-xl active:scale-95 transition-transform shadow-lg shadow-accent/20"
                       dir="ltr"
                     >
                       {t("buyNow")} · {product.priceSuffix ? `${isFa ? "از " : "from "}` : ""}{priceText}
