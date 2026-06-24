@@ -56,6 +56,51 @@ html, body {
   .hide-on-small {
     display: none !important;
   }
+
+  /* Header */
+  header {
+    padding-inline: 12px !important;
+    padding-block: 8px !important;
+  }
+  header .w-10 {
+    width: 32px !important;
+    height: 32px !important;
+  }
+  header p.text-sm {
+    font-size: 11px !important;
+  }
+  header p.text-xs {
+    font-size: 10px !important;
+  }
+  header button.text-xs {
+    font-size: 10px !important;
+    padding-inline: 8px !important;
+  }
+
+  /* Bottom nav */
+  nav span {
+    font-size: 9px !important;
+  }
+
+  /* Product grid cards */
+  .product-card-info h3 {
+    font-size: 11px !important;
+  }
+  .product-card-info p {
+    font-size: 9px !important;
+  }
+
+  /* Global text scale down */
+  .text-sm { font-size: 11px !important; }
+  .text-xs { font-size: 10px !important; }
+  .text-base { font-size: 13px !important; }
+  .text-xl { font-size: 16px !important; }
+  .text-2xl { font-size: 18px !important; }
+
+  /* Spacing */
+  .p-4 { padding: 10px !important; }
+  .p-3 { padding: 8px !important; }
+  .gap-3 { gap: 8px !important; }
 }
 
 .scrollbar-hide {
