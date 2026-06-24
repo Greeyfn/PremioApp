@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { useAppStore } from "@/lib/store";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -29,10 +28,15 @@ export default function AppHeader() {
     <header className="sticky top-0 z-40 bg-bg-primary/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center gap-3">
       {/* Logo & title */}
       <div className="flex items-center gap-3 flex-1">
-        <Link
-          href="https://t.me/premioshop"
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          onClick={() => {
+            const tg = window.Telegram?.WebApp;
+            if (tg) {
+              tg.openTelegramLink("https://t.me/premioshop");
+            } else {
+              window.open("https://t.me/premioshop", "_blank");
+            }
+          }}
           className="w-10 h-10 rounded-full overflow-hidden bg-black flex items-center justify-center p-2 animate-logo"
         >
           <svg viewBox="0 0 472 844" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
@@ -46,7 +50,7 @@ export default function AppHeader() {
               </clipPath>
             </defs>
           </svg>
-        </Link>
+        </button>
         <p className="font-bold text-text-primary text-sm">
           {tgUser ? tgUser.first_name : "پریمیوشاپ"}
         </p>
