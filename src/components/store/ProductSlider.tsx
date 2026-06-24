@@ -81,7 +81,7 @@ export default function ProductSlider({ products, onBuy }: Props) {
         <div
           className="animate-spin-border z-0"
           style={{
-            background: "conic-gradient(from 0deg, rgba(232,213,176,0.15) 0%, rgba(232,213,176,0.15) 50%, #e8d5b0 70%, #fff8ee 85%, #e8d5b0 100%)",
+            background: "conic-gradient(from 0deg, transparent 0%, transparent 20%, rgba(232,213,176,0.6) 25%, #e8d5b0 40%, #fff8ee 60%, #e8d5b0 80%, rgba(232,213,176,0.4) 95%, transparent 100%)",
           }}
         />
         {/* Slider track */}
