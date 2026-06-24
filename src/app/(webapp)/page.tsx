@@ -315,14 +315,22 @@ export default function StorePage() {
       const { scrollWidth, clientWidth } = el;
       const maxScroll = scrollWidth - clientWidth;
       if (maxScroll <= 0) { setScrollThumb({ left: 0, width: 100 }); return; }
-      const scrollLeft = Math.abs(el.scrollLeft);
-      const progress = scrollLeft / maxScroll;
       const ratio = clientWidth / scrollWidth;
       const thumbW = Math.max(ratio * 100, 15);
-      const thumbL = isFaRef.current
-        ? (100 - thumbW) * (1 - progress)
-        : progress * (100 - thumbW);
-      setScrollThumb({ left: thumbL, width: thumbW });
+      let progress: number;
+      if (isFaRef.current) {
+        if (el.scrollLeft <= 0) {
+          // Chrome RTL: 0 at start, negative at end
+          progress = Math.abs(el.scrollLeft) / maxScroll;
+        } else {
+          // iOS/Firefox RTL: maxScroll at start, 0 at end
+          progress = 1 - (el.scrollLeft / maxScroll);
+        }
+        setScrollThumb({ left: (100 - thumbW) * (1 - progress), width: thumbW });
+      } else {
+        progress = el.scrollLeft / maxScroll;
+        setScrollThumb({ left: progress * (100 - thumbW), width: thumbW });
+      }
     };
     update();
     el.addEventListener("scroll", update, { passive: true });
