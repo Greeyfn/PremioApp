@@ -359,21 +359,20 @@ export default function StorePage() {
       </div>
 
       {/* Category Filter */}
-      <div className="relative mb-4 after:absolute after:top-0 after:inset-e-0 after:h-full after:w-8 after:bg-linear-to-l after:from-bg-primary after:to-transparent after:pointer-events-none after:rounded-e-2xl after:z-10">
+      <div className="relative mb-4">
         {/* Progress bar */}
         {categoryLoading && (
           <div className="absolute -top-1 left-0 h-0.5 bg-accent rounded-full animate-progress-bar z-10" key={progressKey} />
         )}
         <div
-          className="flex overflow-x-auto scrollbar-hide bg-bg-elevated rounded-2xl p-1.5 pe-6 gap-1 cursor-grab active:cursor-grabbing select-none"
-          style={{ WebkitOverflowScrolling: "touch" }}
+          className="flex overflow-x-auto scrollbar-hide gap-2 cursor-grab active:cursor-grabbing select-none"
+          style={{ WebkitOverflowScrolling: "touch", paddingInlineEnd: "32px" }}
           onMouseDown={(e) => {
             const el = e.currentTarget;
-            let startX = e.pageX - el.offsetLeft;
-            let scrollLeft = el.scrollLeft;
+            const startX = e.pageX - el.offsetLeft;
+            const scrollLeft = el.scrollLeft;
             const onMove = (ev: MouseEvent) => {
-              const x = ev.pageX - el.offsetLeft;
-              el.scrollLeft = scrollLeft - (x - startX);
+              el.scrollLeft = scrollLeft - (ev.pageX - el.offsetLeft - startX);
             };
             const onUp = () => {
               window.removeEventListener("mousemove", onMove);
@@ -389,10 +388,10 @@ export default function StorePage() {
               <button
                 key={cat.id}
                 onClick={() => handleCategoryChange(cat.id)}
-                className={`whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
+                className={`whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 border ${
                   isActive
-                    ? "bg-accent text-bg-primary shadow-md"
-                    : "text-text-muted hover:text-text-primary"
+                    ? "bg-accent text-bg-primary border-accent shadow-md"
+                    : "bg-bg-card border-border text-text-secondary"
                 }`}
               >
                 {lang === "fa" ? cat.fa : cat.en}
@@ -400,6 +399,8 @@ export default function StorePage() {
             );
           })}
         </div>
+        {/* Fade indicating more items */}
+        <div className="absolute top-0 end-0 h-full w-10 pointer-events-none" style={{ background: "linear-gradient(to left, var(--color-bg-primary) 30%, transparent)" }} />
       </div>
 
       {/* Product Grid */}
