@@ -25,8 +25,8 @@ export default function ProductCard({ product, onBuy }: Props) {
       disabled={product.stock === 0}
       className="bg-bg-card border border-border rounded-2xl overflow-hidden flex flex-col text-start w-full active:scale-95 transition-transform disabled:opacity-50"
     >
-      {/* Image — fullwidth, taller */}
-      <div className="relative w-full aspect-4/3 bg-bg-elevated flex items-center justify-center overflow-hidden">
+      {/* Image — white background like reference */}
+      <div className="relative w-full aspect-square bg-white flex items-center justify-center overflow-hidden">
         {product.imageUrl ? (
           <Image
             src={product.imageUrl}
@@ -47,9 +47,9 @@ export default function ProductCard({ product, onBuy }: Props) {
       </div>
 
       {/* Info */}
-      <div className="p-3 flex flex-col gap-1">
+      <div className="p-3 flex flex-col gap-1.5">
         {/* Category · Tag */}
-        <p className="text-[9px] font-semibold tracking-[0.12em] uppercase text-text-muted">
+        <p className="text-[9px] font-semibold tracking-[0.14em] uppercase text-text-muted">
           {product.category}
           {product.tag ? ` · ${product.tag}` : ""}
         </p>
@@ -61,13 +61,13 @@ export default function ProductCard({ product, onBuy }: Props) {
 
         {/* Description */}
         {product.description && (
-          <p className="text-[10px] text-text-secondary leading-snug line-clamp-1">
+          <p className="text-[11px] text-text-secondary leading-snug line-clamp-2">
             {product.description}
           </p>
         )}
 
         {/* Price */}
-        <p className="text-accent font-bold text-xs mt-1" dir="ltr">
+        <p className="text-accent font-black text-base mt-0.5" dir="ltr">
           {product.packages && product.packages.length > 0
             ? `${isFa ? "از " : "from "}${priceDisplay}`
             : priceDisplay}
