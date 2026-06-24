@@ -52,6 +52,12 @@ html, body {
   color: #1a1a1a;
 }
 
+@media (max-width: 389px) {
+  .hide-on-small {
+    display: none !important;
+  }
+}
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

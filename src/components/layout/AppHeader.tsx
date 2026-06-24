@@ -67,7 +67,7 @@ export default function AppHeader() {
       </div>
 
       {/* Balance */}
-      <button className="flex items-center gap-1.5 bg-bg-elevated rounded-full px-3 py-1.5 border border-border shrink-0">
+      <button className="hide-on-small flex items-center gap-1.5 bg-bg-elevated rounded-full px-3 py-1.5 border border-border shrink-0">
         <span className="text-xs">💰</span>
         <span className="text-xs font-medium text-text-primary whitespace-nowrap">
           {hideBalance ? "***" : balanceDisplay}
