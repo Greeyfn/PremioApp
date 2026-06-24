@@ -191,38 +191,21 @@ export default function ProductSlider({ products, onBuy }: Props) {
                       )}
                     </div>
 
-                    {/* Bottom: title + desc + button + dots */}
+                    {/* Bottom: title + desc + button */}
                     <div>
-                      <h3 className="text-sm font-bold text-white leading-tight line-clamp-1 drop-shadow-lg mb-0.5">
+                      <h3 className="text-xl font-bold text-white leading-tight line-clamp-2 drop-shadow-lg mb-1.5">
                         {product.title}
                       </h3>
-                      <p className="text-[10px] text-white/70 line-clamp-1 mb-2">
+                      <p className="text-xs text-white/70 leading-relaxed line-clamp-2 mb-3 drop-shadow">
                         {product.description}
                       </p>
-                      <div className="flex items-center justify-between" dir="ltr">
-                        <button
-                          onClick={() => onBuy(product)}
-                          className="bg-accent text-bg-primary text-[10px] font-bold px-3 py-1.5 rounded-lg active:scale-95 transition-transform shadow-lg shadow-accent/20"
-                          dir={isFa ? "rtl" : "ltr"}
-                        >
-                          {t("buyNow")} · {priceText}
-                        </button>
-                        {total > 1 && (
-                          <div className="flex items-center gap-1.5">
-                            {products.map((_, i) => (
-                              <button
-                                key={i}
-                                onClick={() => goTo(i)}
-                                className={`rounded-full transition-all duration-300 ${
-                                  i === current
-                                    ? "w-5 h-1.5 bg-accent"
-                                    : "w-1.5 h-1.5 bg-white/30"
-                                }`}
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                      <button
+                        onClick={() => onBuy(product)}
+                        className="bg-accent text-bg-primary text-xs font-bold px-5 py-2.5 rounded-xl active:scale-95 transition-transform shadow-lg shadow-accent/20"
+                        dir={isFa ? "rtl" : "ltr"}
+                      >
+                        {t("buyNow")} · {product.priceSuffix ? `${isFa ? "از " : "from "}` : ""}{priceText}
+                      </button>
                     </div>
                   </div>
                 </div>
