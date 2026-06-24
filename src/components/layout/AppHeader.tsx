@@ -21,17 +21,8 @@ export default function AppHeader() {
   const isFa = lang === "fa";
 
   const balanceToman = usdToTomanFormatted(balance);
-
-  function abbreviateToman(formatted: string): string {
-    const num = parseFloat(formatted.replace(/,/g, ""));
-    if (isNaN(num)) return formatted;
-    if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M تومان`;
-    if (num >= 1_000) return `${(num / 1_000).toFixed(0)}K تومان`;
-    return `${formatted} تومان`;
-  }
-
   const balanceDisplay = isFa && balanceToman
-    ? abbreviateToman(balanceToman)
+    ? `${balanceToman} تومان`
     : `$${balance.toFixed(2)}`;
 
   return (
@@ -67,9 +58,9 @@ export default function AppHeader() {
       </div>
 
       {/* Balance */}
-      <button className="flex items-center gap-1.5 bg-bg-elevated rounded-full px-3 py-1.5 border border-border">
+      <button className="flex items-center gap-1.5 bg-bg-elevated rounded-full px-3 py-1.5 border border-border shrink-0">
         <span className="text-xs">💰</span>
-        <span className="text-sm font-medium text-text-primary" dir="ltr">
+        <span className="text-xs font-medium text-text-primary whitespace-nowrap">
           {hideBalance ? "***" : balanceDisplay}
         </span>
       </button>
