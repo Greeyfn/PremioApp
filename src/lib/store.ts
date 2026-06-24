@@ -19,7 +19,7 @@ interface AppState {
 export const useAppStore = create<AppState>()(
   persist(
     (set) => ({
-      lang: "en",
+      lang: "fa",
       setLang: (lang) => set({ lang }),
       balance: 0,
       setBalance: (balance) => set({ balance }),
