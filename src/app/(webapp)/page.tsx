@@ -414,51 +414,46 @@ export default function StorePage() {
               <button
                 key={product.id}
                 onClick={() => setSelectedProduct(product)}
-                className="flex items-center gap-3 bg-bg-card border border-border rounded-2xl p-3 active:scale-[0.98] transition-transform w-full text-start"
+                className="flex items-center gap-2.5 bg-bg-card border border-border rounded-2xl p-2.5 active:scale-[0.98] transition-transform w-full text-start"
               >
                 {/* Image */}
-                <div className="w-16 h-16 shrink-0 rounded-xl bg-bg-elevated flex items-center justify-center overflow-hidden">
+                <div className="w-14 h-14 shrink-0 rounded-xl bg-bg-elevated flex items-center justify-center overflow-hidden">
                   {product.imageUrl ? (
-                    <img src={product.imageUrl} alt={product.title} className="w-full h-full object-contain p-1.5" />
+                    <img src={product.imageUrl} alt={product.title} className="w-full h-full object-contain p-1" />
                   ) : (
-                    <span className="text-2xl">📦</span>
+                    <span className="text-xl">📦</span>
                   )}
                 </div>
 
-                {/* Info + Price + Button */}
-                <div className="flex-1 min-w-0 flex flex-col gap-1.5">
-                  {/* Top: category tag */}
-                  <p className="text-[9px] font-semibold tracking-[0.12em] uppercase text-text-muted">
+                {/* Info */}
+                <div className="flex-1 min-w-0 flex flex-col gap-1">
+                  <p className="text-[8px] font-semibold tracking-[0.1em] uppercase text-text-muted">
                     {product.category}{product.tag ? ` · ${product.tag}` : ""}
                   </p>
-                  {/* Title */}
-                  <h3 className="text-sm font-bold text-text-primary leading-snug line-clamp-2">
+                  <h3 className="text-xs font-bold text-text-primary leading-snug line-clamp-2">
                     {product.title}
                   </h3>
-                  {/* Description */}
                   {product.description && (
-                    <p className="text-[10px] text-text-muted leading-snug line-clamp-1">
+                    <p className="text-[9px] text-text-muted leading-snug line-clamp-1">
                       {product.description}
                     </p>
                   )}
-                  {/* Bottom row: price + buy button */}
-                  <div className="flex items-center justify-between gap-2 mt-0.5">
-                    {/* Price */}
+                  {/* Price + Buy */}
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
                     {isFa ? (
-                      <div dir="ltr" className="flex items-baseline gap-1">
-                        <span className="text-sm font-black text-accent">
+                      <div dir="ltr" className="flex items-baseline gap-0.5 min-w-0">
+                        <span className="text-xs font-bold text-accent truncate">
                           {usdToTomanFormatted(product.price)}
                         </span>
-                        <span className="text-[10px] text-text-muted">تومان</span>
+                        <span className="text-[9px] text-text-muted shrink-0">ت</span>
                       </div>
                     ) : (
-                      <span className="text-sm font-black text-accent" dir="ltr">
+                      <span className="text-xs font-bold text-accent" dir="ltr">
                         ${product.price}
                       </span>
                     )}
-                    {/* Buy button */}
-                    <div className="flex items-center gap-1 bg-accent text-bg-primary text-[11px] font-bold px-3 py-1.5 rounded-lg">
-                      <ShoppingBag size={11} strokeWidth={2.5} />
+                    <div className="shrink-0 flex items-center gap-1 bg-accent text-bg-primary text-[10px] font-bold px-2.5 py-1 rounded-lg">
+                      <ShoppingBag size={10} strokeWidth={2.5} />
                       <span>{isFa ? "خرید" : "Buy"}</span>
                     </div>
                   </div>
