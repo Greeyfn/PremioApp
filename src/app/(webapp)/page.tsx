@@ -274,13 +274,13 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
 ];
 
 const CATEGORIES = [
-  { id: "all",       fa: "همه",         en: "All",        icon: "🛍️" },
-  { id: "ai",        fa: "هوش مصنوعی",  en: "AI",         icon: "🤖" },
-  { id: "music",     fa: "موسیقی",      en: "Music",      icon: "🎵" },
-  { id: "gaming",    fa: "گیمینگ",      en: "Gaming",     icon: "🎮" },
-  { id: "streaming", fa: "استریمینگ",   en: "Streaming",  icon: "🎬" },
-  { id: "design",    fa: "طراحی",       en: "Design",     icon: "🎨" },
-  { id: "software",  fa: "نرم‌افزار",   en: "Software",   icon: "💻" },
+  { id: "all",       fa: "همه",         en: "All"        },
+  { id: "ai",        fa: "هوش مصنوعی",  en: "AI"         },
+  { id: "music",     fa: "موسیقی",      en: "Music"      },
+  { id: "gaming",    fa: "گیمینگ",      en: "Gaming"     },
+  { id: "streaming", fa: "استریمینگ",   en: "Streaming"  },
+  { id: "design",    fa: "طراحی",       en: "Design"     },
+  { id: "software",  fa: "نرم‌افزار",   en: "Software"   },
 ];
 
 const CATEGORY_PRODUCT_MAP: Record<string, string[]> = {
@@ -299,6 +299,8 @@ export default function StorePage() {
   const [selectedProduct, setSelectedProduct] = useState<ProductWithStock | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
+  const [categoryLoading, setCategoryLoading] = useState(false);
+  const [progressKey, setProgressKey] = useState(0);
 
   useEffect(() => {
     fetch("/api/products")
@@ -317,6 +319,15 @@ export default function StorePage() {
     const matchesCategory = activeCategory === "all" || (CATEGORY_PRODUCT_MAP[activeCategory]?.includes(p.id) ?? false);
     return matchesSearch && matchesCategory;
   });
+
+  function handleCategoryChange(id: string) {
+    setProgressKey((k) => k + 1);
+    setCategoryLoading(true);
+    setTimeout(() => {
+      setActiveCategory(id);
+      setCategoryLoading(false);
+    }, 400);
+  }
 
   return (
     <div className="p-3">
@@ -348,24 +359,29 @@ export default function StorePage() {
       </div>
 
       {/* Category Filter */}
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-4 pb-1">
-        {CATEGORIES.map((cat) => {
-          const isActive = activeCategory === cat.id;
-          return (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`flex items-center gap-1.5 whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-semibold transition-all shrink-0 ${
-                isActive
-                  ? "bg-accent text-bg-primary shadow-md"
-                  : "bg-bg-card border border-border text-text-secondary"
-              }`}
-            >
-              <span>{cat.icon}</span>
-              <span>{lang === "fa" ? cat.fa : cat.en}</span>
-            </button>
-          );
-        })}
+      <div className="relative mb-4">
+        {/* Progress bar */}
+        {categoryLoading && (
+          <div className="absolute -top-1 left-0 h-0.5 bg-accent rounded-full animate-progress-bar z-10" key={progressKey} />
+        )}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+          {CATEGORIES.map((cat) => {
+            const isActive = activeCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => handleCategoryChange(cat.id)}
+                className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-semibold transition-all shrink-0 ${
+                  isActive
+                    ? "bg-accent text-bg-primary shadow-md"
+                    : "bg-bg-card border border-border text-text-secondary"
+                }`}
+              >
+                {lang === "fa" ? cat.fa : cat.en}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Product Grid */}
