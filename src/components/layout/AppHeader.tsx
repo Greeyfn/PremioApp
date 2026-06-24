@@ -1,4 +1,5 @@
 "use client";
+import { Sun, Moon } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -13,6 +14,8 @@ const LANGS: { code: Lang; label: string }[] = [
 export default function AppHeader() {
   const { lang, setLang } = useLanguage();
   const { user: tgUser } = useTelegram();
+  const theme = useAppStore((s) => s.theme);
+  const setTheme = useAppStore((s) => s.setTheme);
   const { usdToTomanFormatted } = useCurrency();
   const balance = useAppStore((s) => s.balance);
   const hideBalance = useAppStore((s) => s.hideBalance);
@@ -69,6 +72,14 @@ export default function AppHeader() {
         <span className="text-xs font-medium text-text-primary whitespace-nowrap">
           {hideBalance ? "***" : balanceDisplay}
         </span>
+      </button>
+
+      {/* Theme toggle */}
+      <button
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        className="w-8 h-8 rounded-full flex items-center justify-center bg-bg-elevated border border-border text-text-secondary hover:text-text-primary transition-colors"
+      >
+        {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
       </button>
 
       {/* Language switcher */}

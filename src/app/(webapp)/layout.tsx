@@ -14,6 +14,7 @@ export default function WebAppLayout({
   const setUserId = useAppStore((s) => s.setUserId);
   const setBalance = useAppStore((s) => s.setBalance);
   const lang = useAppStore((s) => s.lang);
+  const theme = useAppStore((s) => s.theme);
   const isRtl = lang === "fa";
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export default function WebAppLayout({
   return (
     <div
       dir={isRtl ? "rtl" : "ltr"}
-      className="flex flex-col min-h-screen max-w-md mx-auto"
+      className={`flex flex-col min-h-screen max-w-md mx-auto ${theme === "light" ? "light-mode" : ""}`}
     >
       <AppHeader />
       <main className="flex-1 overflow-y-auto pb-20 scrollbar-hide">

@@ -6,6 +6,8 @@ import type { Lang } from "@/lib/translations";
 interface AppState {
   lang: Lang;
   setLang: (lang: Lang) => void;
+  theme: "dark" | "light";
+  setTheme: (theme: "dark" | "light") => void;
   balance: number;
   setBalance: (balance: number) => void;
   hideBalance: boolean;
@@ -21,6 +23,8 @@ export const useAppStore = create<AppState>()(
     (set) => ({
       lang: "fa",
       setLang: (lang) => set({ lang }),
+      theme: "dark",
+      setTheme: (theme) => set({ theme }),
       balance: 0,
       setBalance: (balance) => set({ balance }),
       hideBalance: false,
@@ -34,6 +38,7 @@ export const useAppStore = create<AppState>()(
       name: "premio-shop-storage",
       partialize: (state) => ({
         lang: state.lang,
+        theme: state.theme,
         hideBalance: state.hideBalance,
         pushNotify: state.pushNotify,
       }),
