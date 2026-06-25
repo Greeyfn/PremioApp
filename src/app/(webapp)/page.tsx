@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useLayoutEffect, useState, useRef } from "react";
 import { Search, ShoppingBag } from "lucide-react";
 import ProductCard from "@/components/store/ProductCard";
 import ProductSlider from "@/components/store/ProductSlider";
@@ -315,33 +315,25 @@ export default function StorePage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollThumb, setScrollThumb] = useState({ left: 0, width: 100 });
 
-  const isFaRef = useRef(false);
-  useEffect(() => { isFaRef.current = lang === "fa"; }, [lang]);
+  const isFaRef = useRef(isFa);
+  useEffect(() => { isFaRef.current = isFa; }, [isFa]);
 
-  // When Farsi mode activates, row-reverse puts همه on the right (high scrollLeft).
-  // When English mode activates, normal row puts All on the left (scrollLeft=0).
-  useEffect(() => {
+  // Runs before paint so همه is already at the right when Farsi first renders
+  // (row-reverse: همه is at the right = scrollLeft=maxScroll, 0 for English)
+  useLayoutEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    requestAnimationFrame(() => {
-      el.scrollLeft = isFa ? el.scrollWidth - el.clientWidth : 0;
-    });
+    el.scrollLeft = isFa ? el.scrollWidth - el.clientWidth : 0;
   }, [isFa]);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     const update = () => {
-      const { scrollWidth, clientWidth, scrollLeft } = el;
-      const maxScroll = scrollWidth - clientWidth;
-      if (maxScroll <= 0) { setScrollThumb({ left: 0, width: 100 }); return; }
-      const thumbW = Math.max((clientWidth / scrollWidth) * 100, 15);
-      // row-reverse (Farsi): scrollLeft=maxScroll at visual-start (همه, right side)
-      //                       scrollLeft=0       at visual-end   (نرم‌افزار, left side)
-      // normal row  (English): scrollLeft=0        at visual-start (All, left side)
-      //                        scrollLeft=maxScroll at visual-end  (Software, right side)
-      // In both cases: (scrollLeft/maxScroll)*(100-thumbW) puts thumb correctly
-      const thumbLeft = (scrollLeft / maxScroll) * (100 - thumbW);
+      const max = el.scrollWidth - el.clientWidth;
+      if (max <= 0) { setScrollThumb({ left: 0, width: 100 }); return; }
+      const thumbW = Math.max((el.clientWidth / el.scrollWidth) * 100, 15);
+      const thumbLeft = (el.scrollLeft / max) * (100 - thumbW);
       setScrollThumb({ left: thumbLeft, width: thumbW });
     };
     update();
