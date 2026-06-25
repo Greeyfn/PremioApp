@@ -325,22 +325,9 @@ export default function StorePage() {
       const { scrollWidth, clientWidth } = el;
       const maxScroll = scrollWidth - clientWidth;
       if (maxScroll <= 0) { setScrollThumb({ left: 0, width: 100 }); return; }
-      const ratio = clientWidth / scrollWidth;
-      const thumbW = Math.max(ratio * 100, 15);
-      let progress: number;
-      if (isFaRef.current) {
-        if (el.scrollLeft <= 0) {
-          // Chrome RTL: 0 at start, negative at end
-          progress = Math.abs(el.scrollLeft) / maxScroll;
-        } else {
-          // iOS/Firefox RTL: maxScroll at start, 0 at end
-          progress = 1 - (el.scrollLeft / maxScroll);
-        }
-        setScrollThumb({ left: (100 - thumbW) * (1 - progress), width: thumbW });
-      } else {
-        progress = el.scrollLeft / maxScroll;
-        setScrollThumb({ left: progress * (100 - thumbW), width: thumbW });
-      }
+      const thumbW = Math.max((clientWidth / scrollWidth) * 100, 15);
+      const progress = el.scrollLeft / maxScroll;
+      setScrollThumb({ left: progress * (100 - thumbW), width: thumbW });
     };
     update();
     el.addEventListener("scroll", update, { passive: true });
@@ -414,8 +401,9 @@ export default function StorePage() {
         )}
         <div
           ref={scrollRef}
+          dir="ltr"
           className="flex overflow-x-auto scrollbar-hide gap-2 cursor-grab active:cursor-grabbing select-none"
-          style={{ WebkitOverflowScrolling: "touch", paddingInlineEnd: "32px" }}
+          style={{ WebkitOverflowScrolling: "touch", paddingRight: "32px" }}
           onMouseDown={(e) => {
             const el = e.currentTarget;
             const startX = e.pageX;
@@ -425,18 +413,15 @@ export default function StorePage() {
             let rafId: number;
 
             const onMove = (ev: MouseEvent) => {
-              const delta = ev.pageX - startX;
               velocity = ev.pageX - lastX;
               lastX = ev.pageX;
-              // RTL: drag direction is opposite of LTR
-              el.scrollLeft = startScrollLeft + (isFaRef.current ? delta : -delta);
+              el.scrollLeft = startScrollLeft - (ev.pageX - startX);
             };
 
             const onUp = () => {
               window.removeEventListener("mousemove", onMove);
               window.removeEventListener("mouseup", onUp);
-              // momentum glide after release
-              let v = isFaRef.current ? velocity : -velocity;
+              let v = -velocity;
               const glide = () => {
                 if (Math.abs(v) < 0.5) return;
                 el.scrollLeft += v;
@@ -468,15 +453,10 @@ export default function StorePage() {
             );
           })}
         </div>
-        {/* Fade indicating more items */}
+        {/* Fade indicating more items — always right side since container is dir=ltr */}
         <div
-          className="absolute top-0 h-full w-10 pointer-events-none"
-          style={{
-            insetInlineEnd: 0,
-            background: isFa
-              ? "linear-gradient(to right, var(--color-bg-primary) 30%, transparent)"
-              : "linear-gradient(to left, var(--color-bg-primary) 30%, transparent)",
-          }}
+          className="absolute top-0 right-0 h-full w-10 pointer-events-none"
+          style={{ background: "linear-gradient(to left, var(--color-bg-primary) 30%, transparent)" }}
         />
         {/* Scroll indicator */}
         {scrollThumb.width < 99 && (
