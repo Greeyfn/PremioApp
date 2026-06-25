@@ -1,14 +1,15 @@
 "use client";
-import { Sun, Moon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Sun, Moon, ChevronDown, Globe } from "lucide-react";
 import { useAppStore } from "@/lib/store";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useTelegram } from "@/hooks/useTelegram";
 import type { Lang } from "@/lib/translations";
 
-const LANGS: { code: Lang; label: string }[] = [
-  { code: "fa", label: "FA" },
-  { code: "en", label: "EN" },
+const LANGS: { code: Lang; label: string; native: string }[] = [
+  { code: "fa", label: "FA", native: "فارسی" },
+  { code: "en", label: "EN", native: "English" },
 ];
 
 export default function AppHeader() {
@@ -19,6 +20,8 @@ export default function AppHeader() {
   const { usdToTomanFormatted } = useCurrency();
   const balance = useAppStore((s) => s.balance);
   const hideBalance = useAppStore((s) => s.hideBalance);
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
 
   const isFa = lang === "fa";
 
@@ -26,6 +29,17 @@ export default function AppHeader() {
   const balanceDisplay = isFa && balanceToman
     ? `${balanceToman} ت`
     : `$${balance.toFixed(0)}`;
+
+  useEffect(() => {
+    if (!langOpen) return;
+    const close = (e: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false);
+      }
+    };
+    window.addEventListener("mousedown", close);
+    return () => window.removeEventListener("mousedown", close);
+  }, [langOpen]);
 
   return (
     <header className="sticky top-0 z-40 bg-bg-primary/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center gap-3">
@@ -82,21 +96,41 @@ export default function AppHeader() {
         {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
       </button>
 
-      {/* Language switcher */}
-      <div className="flex items-center bg-bg-elevated rounded-full border border-border overflow-hidden">
-        {LANGS.map(({ code, label }) => (
-          <button
-            key={code}
-            onClick={() => setLang(code)}
-            className={`px-2.5 py-1 text-xs font-medium transition-colors ${
-              lang === code
-                ? "bg-accent text-bg-primary"
-                : "text-text-secondary hover:text-text-primary"
-            }`}
+      {/* Language dropdown */}
+      <div ref={langRef} className="relative">
+        <button
+          onClick={() => setLangOpen((o) => !o)}
+          className="flex items-center gap-1 bg-bg-elevated border border-border rounded-full px-2.5 py-1.5 text-xs font-medium text-text-primary transition-colors"
+        >
+          <Globe size={13} className="text-text-muted" />
+          <span>{lang.toUpperCase()}</span>
+          <ChevronDown
+            size={11}
+            className={`text-text-muted transition-transform duration-200 ${langOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        {langOpen && (
+          <div
+            className="absolute top-full mt-2 bg-bg-elevated border border-border rounded-xl shadow-xl overflow-hidden z-50"
+            style={{ insetInlineEnd: 0, minWidth: "110px" }}
           >
-            {label}
-          </button>
-        ))}
+            {LANGS.map(({ code, label, native }) => (
+              <button
+                key={code}
+                onClick={() => { setLang(code); setLangOpen(false); }}
+                className={`w-full flex items-center gap-2 px-3 py-2.5 text-xs transition-colors ${
+                  lang === code
+                    ? "bg-accent/15 text-accent font-bold"
+                    : "text-text-secondary hover:bg-bg-primary hover:text-text-primary"
+                }`}
+              >
+                <span className="font-mono font-bold text-[11px]">{label}</span>
+                <span className="text-text-muted">{native}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </header>
   );
