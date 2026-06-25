@@ -318,28 +318,30 @@ export default function StorePage() {
   const isFaRef = useRef(false);
   useEffect(() => { isFaRef.current = lang === "fa"; }, [lang]);
 
+  // When Farsi mode activates, row-reverse puts همه on the right (high scrollLeft).
+  // When English mode activates, normal row puts All on the left (scrollLeft=0).
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
+    requestAnimationFrame(() => {
+      el.scrollLeft = isFa ? el.scrollWidth - el.clientWidth : 0;
+    });
+  }, [isFa]);
 
-    // Farsi uses row-reverse so start position is maxScroll
-    if (isFaRef.current) {
-      requestAnimationFrame(() => { el.scrollLeft = el.scrollWidth - el.clientWidth; });
-    }
-
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
     const update = () => {
       const { scrollWidth, clientWidth, scrollLeft } = el;
       const maxScroll = scrollWidth - clientWidth;
       if (maxScroll <= 0) { setScrollThumb({ left: 0, width: 100 }); return; }
       const thumbW = Math.max((clientWidth / scrollWidth) * 100, 15);
-      // row-reverse LTR: scrollLeft=maxScroll at RTL-start, scrollLeft=0 at RTL-end
-      // thumb should sit at right when at start and move left as user scrolls
-      const progress = isFaRef.current
-        ? scrollLeft / maxScroll            // 1 at start, 0 at end → thumb goes right→left
-        : scrollLeft / maxScroll;           // 0 at start, 1 at end → thumb goes left→right
-      const thumbLeft = isFaRef.current
-        ? progress * (100 - thumbW)         // maxScroll→high%, 0→0%
-        : progress * (100 - thumbW);
+      // row-reverse (Farsi): scrollLeft=maxScroll at visual-start (همه, right side)
+      //                       scrollLeft=0       at visual-end   (نرم‌افزار, left side)
+      // normal row  (English): scrollLeft=0        at visual-start (All, left side)
+      //                        scrollLeft=maxScroll at visual-end  (Software, right side)
+      // In both cases: (scrollLeft/maxScroll)*(100-thumbW) puts thumb correctly
+      const thumbLeft = (scrollLeft / maxScroll) * (100 - thumbW);
       setScrollThumb({ left: thumbLeft, width: thumbW });
     };
     update();
