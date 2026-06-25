@@ -113,6 +113,25 @@ html, body {
   .gap-3 { gap: 8px !important; }
 }
 
+/* Page transition */
+@keyframes slide-from-right {
+  from { transform: translateX(40px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes slide-from-left {
+  from { transform: translateX(-40px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+.page-transition-wrap {
+  will-change: transform, opacity;
+}
+.page-slide-right {
+  animation: slide-from-right 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+.page-slide-left {
+  animation: slide-from-left 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

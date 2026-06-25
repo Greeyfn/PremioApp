@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import BottomNav from "@/components/layout/BottomNav";
 import AppHeader from "@/components/layout/AppHeader";
+import PageTransition from "@/components/layout/PageTransition";
 import { useTelegram } from "@/hooks/useTelegram";
 import { useAppStore } from "@/lib/store";
 
@@ -48,8 +49,8 @@ export default function WebAppLayout({
       className={`flex flex-col min-h-screen max-w-md mx-auto ${theme === "light" ? "light-mode" : ""}`}
     >
       <AppHeader />
-      <main className="flex-1 overflow-y-auto pb-20 scrollbar-hide">
-        {children}
+      <main className="flex-1 overflow-y-auto pb-20 scrollbar-hide overflow-x-hidden">
+        <PageTransition>{children}</PageTransition>
       </main>
       <BottomNav />
     </div>
