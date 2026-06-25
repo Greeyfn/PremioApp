@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useLayoutEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Search, ShoppingBag } from "lucide-react";
 import ProductCard from "@/components/store/ProductCard";
 import ProductSlider from "@/components/store/ProductSlider";
@@ -318,13 +318,18 @@ export default function StorePage() {
   const isFaRef = useRef(isFa);
   useEffect(() => { isFaRef.current = isFa; }, [isFa]);
 
-  // Runs before paint so همه is already at the right when Farsi first renders
-  // (row-reverse: همه is at the right = scrollLeft=maxScroll, 0 for English)
-  useLayoutEffect(() => {
+  // Chrome RTL: scrollLeft is 0→negative. Safari/Firefox RTL: scrollLeft is maxScroll→0.
+  // Detect once at mount by trying scrollLeft+1: Chrome clamps it (stays same), Safari accepts it.
+  const rtlChromeRef = useRef(false);
+  useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    el.scrollLeft = isFa ? el.scrollWidth - el.clientWidth : 0;
-  }, [isFa]);
+    if (getComputedStyle(el).direction !== "rtl") return;
+    const s = el.scrollLeft;
+    el.scrollLeft = s + 1;
+    rtlChromeRef.current = el.scrollLeft === s;
+    el.scrollLeft = s;
+  }, []);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -333,7 +338,18 @@ export default function StorePage() {
       const max = el.scrollWidth - el.clientWidth;
       if (max <= 0) { setScrollThumb({ left: 0, width: 100 }); return; }
       const thumbW = Math.max((el.clientWidth / el.scrollWidth) * 100, 15);
-      const thumbLeft = (el.scrollLeft / max) * (100 - thumbW);
+      // Normalize scroll to 0=visual-start, max=visual-end regardless of browser/direction
+      let normalized: number;
+      if (isFaRef.current) {
+        normalized = rtlChromeRef.current ? -el.scrollLeft : max - el.scrollLeft;
+      } else {
+        normalized = el.scrollLeft;
+      }
+      // RTL: thumb at right(start) → moves left as user scrolls
+      // LTR: thumb at left(start) → moves right as user scrolls
+      const thumbLeft = isFaRef.current
+        ? (1 - normalized / max) * (100 - thumbW)
+        : (normalized / max) * (100 - thumbW);
       setScrollThumb({ left: thumbLeft, width: thumbW });
     };
     update();
@@ -408,14 +424,8 @@ export default function StorePage() {
         )}
         <div
           ref={scrollRef}
-          dir="ltr"
           className="flex overflow-x-auto scrollbar-hide gap-2 cursor-grab active:cursor-grabbing select-none"
-          style={{
-            WebkitOverflowScrolling: "touch",
-            paddingRight: isFa ? undefined : "32px",
-            paddingLeft: isFa ? "32px" : undefined,
-            flexDirection: isFa ? "row-reverse" : "row",
-          }}
+          style={{ WebkitOverflowScrolling: "touch", paddingInlineEnd: "32px" }}
           onMouseDown={(e) => {
             const el = e.currentTarget;
             const startX = e.pageX;
@@ -423,19 +433,25 @@ export default function StorePage() {
             let lastX = e.pageX;
             let velocity = 0;
             let rafId: number;
+            let moved = false;
 
             const onMove = (ev: MouseEvent) => {
+              const delta = ev.pageX - startX;
+              if (Math.abs(delta) > 3) moved = true;
               velocity = ev.pageX - lastX;
               lastX = ev.pageX;
-              // row-reverse: drag right → scrollLeft increases (toward همه)
-              // normal row: drag right → scrollLeft decreases (toward start)
-              const delta = ev.pageX - startX;
+              // RTL (both Chrome-negative and Safari-positive): drag right = toward start → +delta
+              // LTR: drag right = toward start → -delta
               el.scrollLeft = startScrollLeft + (isFaRef.current ? delta : -delta);
             };
 
             const onUp = () => {
               window.removeEventListener("mousemove", onMove);
               window.removeEventListener("mouseup", onUp);
+              // Prevent category click if user was dragging
+              if (moved) {
+                window.addEventListener("click", (ev) => ev.stopPropagation(), { once: true, capture: true });
+              }
               let v = isFaRef.current ? velocity : -velocity;
               const glide = () => {
                 if (Math.abs(v) < 0.5) return;
@@ -468,12 +484,11 @@ export default function StorePage() {
             );
           })}
         </div>
-        {/* Fade: right side for LTR, left side for Farsi row-reverse */}
+        {/* Fade at inline-end: right in LTR, left in RTL */}
         <div
           className="absolute top-0 h-full w-10 pointer-events-none"
           style={{
-            left: isFa ? 0 : undefined,
-            right: isFa ? undefined : 0,
+            insetInlineEnd: 0,
             background: isFa
               ? "linear-gradient(to right, var(--color-bg-primary) 30%, transparent)"
               : "linear-gradient(to left, var(--color-bg-primary) 30%, transparent)",
