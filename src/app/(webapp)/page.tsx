@@ -418,17 +418,37 @@ export default function StorePage() {
           style={{ WebkitOverflowScrolling: "touch", paddingInlineEnd: "32px" }}
           onMouseDown={(e) => {
             const el = e.currentTarget;
-            const startX = e.pageX - el.offsetLeft;
-            const scrollLeft = el.scrollLeft;
+            const startX = e.pageX;
+            const startScrollLeft = el.scrollLeft;
+            let lastX = e.pageX;
+            let velocity = 0;
+            let rafId: number;
+
             const onMove = (ev: MouseEvent) => {
-              el.scrollLeft = scrollLeft - (ev.pageX - el.offsetLeft - startX);
+              const delta = ev.pageX - startX;
+              velocity = ev.pageX - lastX;
+              lastX = ev.pageX;
+              // RTL: drag direction is opposite of LTR
+              el.scrollLeft = startScrollLeft + (isFaRef.current ? delta : -delta);
             };
+
             const onUp = () => {
               window.removeEventListener("mousemove", onMove);
               window.removeEventListener("mouseup", onUp);
+              // momentum glide after release
+              let v = isFaRef.current ? velocity : -velocity;
+              const glide = () => {
+                if (Math.abs(v) < 0.5) return;
+                el.scrollLeft += v;
+                v *= 0.88;
+                rafId = requestAnimationFrame(glide);
+              };
+              rafId = requestAnimationFrame(glide);
             };
+
             window.addEventListener("mousemove", onMove);
             window.addEventListener("mouseup", onUp);
+            return () => cancelAnimationFrame(rafId);
           }}
         >
           {CATEGORIES.map((cat) => {
@@ -462,7 +482,7 @@ export default function StorePage() {
         {scrollThumb.width < 99 && (
           <div className="relative h-0.5 bg-border rounded-full mt-2 mx-1">
             <div
-              className="absolute top-0 h-full bg-accent rounded-full transition-all duration-150"
+              className="absolute top-0 h-full bg-accent rounded-full transition-all duration-200 ease-out"
               style={{ left: `${scrollThumb.left}%`, width: `${scrollThumb.width}%` }}
             />
           </div>
