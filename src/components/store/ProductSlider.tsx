@@ -182,17 +182,17 @@ export default function ProductSlider({ products, onBuy }: Props) {
                   <div className="absolute bottom-0 start-0 end-0 z-10 p-3" dir={isFa ? "rtl" : "ltr"}>
                     {/* Tag */}
                     <div className="flex items-center gap-1.5 mb-1.5">
-                      <span className="inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-full border border-white/20">
+                      <span className="inline-flex items-center gap-1 bg-black/40 text-white text-[9px] font-bold px-2 py-0.5 rounded-full border border-white/20">
                         {icon} {product.category}
                       </span>
                       {product.tag && (
-                        <span className="text-[9px] text-white/70 bg-white/10 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                        <span className="text-[9px] text-white/70 bg-black/30 px-2 py-0.5 rounded-full">
                           {product.tag}
                         </span>
                       )}
                     </div>
                     {/* Title */}
-                    <h3 className="slider-title font-bold text-white leading-tight line-clamp-1 drop-shadow-lg mb-1">
+                    <h3 className="slider-title font-bold text-white leading-tight line-clamp-1 mb-1">
                       {product.title}
                     </h3>
                     {/* Description */}
@@ -203,7 +203,7 @@ export default function ProductSlider({ products, onBuy }: Props) {
                     {features.length > 0 && (
                       <div className="grid grid-cols-2 gap-1 mb-2.5">
                         {features.slice(0, 4).map((f, i) => (
-                          <span key={i} className="inline-flex items-center gap-1 text-[9px] text-white/80 bg-white/10 backdrop-blur-sm px-1.5 py-0.5 rounded-full">
+                          <span key={i} className="inline-flex items-center gap-1 text-[9px] text-white/80 bg-black/30 px-1.5 py-0.5 rounded-full">
                             <Truck size={7} className="text-accent shrink-0" />
                             <span className="truncate">{f}</span>
                           </span>
