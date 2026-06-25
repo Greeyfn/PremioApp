@@ -321,13 +321,26 @@ export default function StorePage() {
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
+
+    // Farsi uses row-reverse so start position is maxScroll
+    if (isFaRef.current) {
+      requestAnimationFrame(() => { el.scrollLeft = el.scrollWidth - el.clientWidth; });
+    }
+
     const update = () => {
-      const { scrollWidth, clientWidth } = el;
+      const { scrollWidth, clientWidth, scrollLeft } = el;
       const maxScroll = scrollWidth - clientWidth;
       if (maxScroll <= 0) { setScrollThumb({ left: 0, width: 100 }); return; }
       const thumbW = Math.max((clientWidth / scrollWidth) * 100, 15);
-      const progress = el.scrollLeft / maxScroll;
-      setScrollThumb({ left: progress * (100 - thumbW), width: thumbW });
+      // row-reverse LTR: scrollLeft=maxScroll at RTL-start, scrollLeft=0 at RTL-end
+      // thumb should sit at right when at start and move left as user scrolls
+      const progress = isFaRef.current
+        ? scrollLeft / maxScroll            // 1 at start, 0 at end → thumb goes right→left
+        : scrollLeft / maxScroll;           // 0 at start, 1 at end → thumb goes left→right
+      const thumbLeft = isFaRef.current
+        ? progress * (100 - thumbW)         // maxScroll→high%, 0→0%
+        : progress * (100 - thumbW);
+      setScrollThumb({ left: thumbLeft, width: thumbW });
     };
     update();
     el.addEventListener("scroll", update, { passive: true });
@@ -403,7 +416,12 @@ export default function StorePage() {
           ref={scrollRef}
           dir="ltr"
           className="flex overflow-x-auto scrollbar-hide gap-2 cursor-grab active:cursor-grabbing select-none"
-          style={{ WebkitOverflowScrolling: "touch", paddingRight: "32px" }}
+          style={{
+            WebkitOverflowScrolling: "touch",
+            paddingRight: isFa ? undefined : "32px",
+            paddingLeft: isFa ? "32px" : undefined,
+            flexDirection: isFa ? "row-reverse" : "row",
+          }}
           onMouseDown={(e) => {
             const el = e.currentTarget;
             const startX = e.pageX;
@@ -415,13 +433,16 @@ export default function StorePage() {
             const onMove = (ev: MouseEvent) => {
               velocity = ev.pageX - lastX;
               lastX = ev.pageX;
-              el.scrollLeft = startScrollLeft - (ev.pageX - startX);
+              // row-reverse: drag right → scrollLeft increases (toward همه)
+              // normal row: drag right → scrollLeft decreases (toward start)
+              const delta = ev.pageX - startX;
+              el.scrollLeft = startScrollLeft + (isFaRef.current ? delta : -delta);
             };
 
             const onUp = () => {
               window.removeEventListener("mousemove", onMove);
               window.removeEventListener("mouseup", onUp);
-              let v = -velocity;
+              let v = isFaRef.current ? velocity : -velocity;
               const glide = () => {
                 if (Math.abs(v) < 0.5) return;
                 el.scrollLeft += v;
@@ -453,10 +474,16 @@ export default function StorePage() {
             );
           })}
         </div>
-        {/* Fade indicating more items — always right side since container is dir=ltr */}
+        {/* Fade: right side for LTR, left side for Farsi row-reverse */}
         <div
-          className="absolute top-0 right-0 h-full w-10 pointer-events-none"
-          style={{ background: "linear-gradient(to left, var(--color-bg-primary) 30%, transparent)" }}
+          className="absolute top-0 h-full w-10 pointer-events-none"
+          style={{
+            left: isFa ? 0 : undefined,
+            right: isFa ? undefined : 0,
+            background: isFa
+              ? "linear-gradient(to right, var(--color-bg-primary) 30%, transparent)"
+              : "linear-gradient(to left, var(--color-bg-primary) 30%, transparent)",
+          }}
         />
         {/* Scroll indicator */}
         {scrollThumb.width < 99 && (
