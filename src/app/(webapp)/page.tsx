@@ -404,15 +404,15 @@ export default function StorePage() {
 
       {/* Search Bar */}
       <div className="relative mb-3">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Search size={18} className="text-text-muted" />
+        <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+          <Search size={14} className="text-text-muted" />
         </div>
         <input
           type="text"
           placeholder={lang === "fa" ? "جستجوی محصولات..." : "Search products..."}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="block w-full pl-10 pr-3 py-2.5 border border-border rounded-xl leading-5 bg-bg-card text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent sm:text-sm transition-all shadow-sm"
+          className="block w-full pl-8 pr-3 py-1.5 text-xs border border-border rounded-lg bg-bg-card text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
         />
       </div>
 
