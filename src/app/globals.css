@@ -3,16 +3,16 @@
 @theme {
   --color-bg-primary: #0f0f0f;
   --color-bg-secondary: #1a1a1a;
-  --color-bg-card: #1e1a14;
+  --color-bg-card: #18181f;
   --color-bg-elevated: #252525;
-  --color-accent: #4da3ff;
-  --color-accent-hover: #6fb6ff;
-  --color-accent-dark: #2f7fd6;
-  --color-text-primary: #f5f0e8;
-  --color-text-secondary: #9a9189;
-  --color-text-muted: #6b6560;
-  --color-border: #2a2520;
-  --color-border-light: #3a3530;
+  --color-accent: #6366f1;
+  --color-accent-hover: #818cf8;
+  --color-accent-dark: #4f46e5;
+  --color-text-primary: #f2f2f5;
+  --color-text-secondary: #98979f;
+  --color-text-muted: #6a6a72;
+  --color-border: #27272f;
+  --color-border-light: #35353f;
   --color-success: #4ade80;
   --color-warning: #fbbf24;
   --color-error: #f87171;
@@ -32,7 +32,7 @@
 html, body {
   overflow-x: hidden;
   background-color: #0f0f0f;
-  color: #f5f0e8;
+  color: #f2f2f5;
 }
 
 .light-mode {
@@ -40,9 +40,9 @@ html, body {
   --color-bg-secondary: #eaeae4;
   --color-bg-card: #ffffff;
   --color-bg-elevated: #ebebeb;
-  --color-accent: #1976d2;
-  --color-accent-hover: #1565c0;
-  --color-accent-dark: #0d47a1;
+  --color-accent: #4f46e5;
+  --color-accent-hover: #4338ca;
+  --color-accent-dark: #3730a3;
   --color-text-primary: #1a1a1a;
   --color-text-secondary: #555550;
   --color-text-muted: #888884;
@@ -132,7 +132,7 @@ html, body {
   width: 0; height: 0;
   border-radius: 12px;
   background: var(--color-accent);
-  box-shadow: 0 2px 8px rgba(77,163,255,0.2);
+  box-shadow: 0 2px 8px rgba(99,102,241,0.25);
   pointer-events: none;
   z-index: 0;
   opacity: 0;
