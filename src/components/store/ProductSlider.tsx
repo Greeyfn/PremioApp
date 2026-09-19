@@ -130,13 +130,13 @@ export default function ProductSlider({ products, onBuy }: Props) {
       {/* Glow border wrapper */}
       <div
         className="relative rounded-2xl p-0.5 overflow-hidden"
-        style={{ boxShadow: "0 0 0 1px rgba(232,213,176,0.5), 0 0 20px 4px rgba(232,213,176,0.25)" }}
+        style={{ boxShadow: "0 0 0 1px rgba(77,163,255,0.5), 0 0 20px 4px rgba(77,163,255,0.25)" }}
       >
         {/* Rotating sweep */}
         <div
           className="animate-spin-border z-0"
           style={{
-            background: "conic-gradient(from 0deg, transparent 0%, transparent 20%, rgba(232,213,176,0.6) 25%, #e8d5b0 40%, #fff8ee 60%, #e8d5b0 80%, rgba(232,213,176,0.4) 95%, transparent 100%)",
+            background: "conic-gradient(from 0deg, transparent 0%, transparent 20%, rgba(77,163,255,0.6) 25%, #4da3ff 40%, #eaf5ff 60%, #4da3ff 80%, rgba(77,163,255,0.4) 95%, transparent 100%)",
           }}
         />
         {/* Slider track */}
