@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useLayoutEffect, useState, useRef } from "react";
 import { Search, ShoppingBag } from "lucide-react";
 import ProductCard from "@/components/store/ProductCard";
 import ProductSlider from "@/components/store/ProductSlider";
@@ -11,7 +11,8 @@ import type { ProductWithStock } from "@/types";
 const DEMO_PRODUCTS: ProductWithStock[] = [
   {
     id: "demo-chatgpt",
-    title: "❤️ ChatGPT Plus — ایمیل آماده",
+    title: "ChatGPT Plus",
+    titleFa: "چت‌جی‌پی‌تی پلاس",
     description: "فعال‌سازی فوری روی اکانت اختصاصی و از پیش ساخته شده — دسترسی کامل به قابلیت‌های پلاس",
     category: "ACCOUNT",
     tag: "ماهانه",
@@ -25,14 +26,19 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 10,
     imageUrl: "/icons/chatgpt-logo.png",
     isActive: true,
+    accountTypes: ["آماده"],
     packages: [
-      { id: "gpt-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 20 },
-      { id: "gpt-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 200 },
+      { id: "gpt-1m", nameEn: "1M", nameFa: "۱ ماهه", price: 20 },
+      { id: "gpt-2m", nameEn: "2M", nameFa: "۲ ماهه", price: 38 },
+      { id: "gpt-3m", nameEn: "3M", nameFa: "۳ ماهه", price: 55 },
+      { id: "gpt-6m", nameEn: "6M", nameFa: "۶ ماهه", price: 100 },
+      { id: "gpt-12m", nameEn: "1Y", nameFa: "۱ ساله", price: 180 },
     ],
   },
   {
     id: "demo-spotify",
-    title: "Spotify Premium — روی ایمیل شخصی",
+    title: "Spotify Premium",
+    titleFa: "اسپاتیفای پرمیوم",
     description: "پرمیوم‌سازی کاملاً قانونی و بدون قطعی اکانت اسپاتیفای روی ایمیل اختصاصی خود شما",
     category: "ACCOUNT",
     tag: "۳ ماهه",
@@ -46,16 +52,18 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 20,
     imageUrl: "/icons/spotify-logo.svg",
     isActive: true,
+    accountTypes: ["شخصی"],
     packages: [
-      { id: "spot-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 6 },
-      { id: "spot-3m", nameEn: "3 Months", nameFa: "۳ ماهه", price: 15 },
-      { id: "spot-6m", nameEn: "6 Months", nameFa: "۶ ماهه", price: 28 },
-      { id: "spot-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 50 },
+      { id: "spot-1m", nameEn: "1M", nameFa: "۱ ماهه", price: 6 },
+      { id: "spot-3m", nameEn: "3M", nameFa: "۳ ماهه", price: 15 },
+      { id: "spot-6m", nameEn: "6M", nameFa: "۶ ماهه", price: 28 },
+      { id: "spot-12m", nameEn: "1Y", nameFa: "۱ ساله", price: 50 },
     ],
   },
   {
     id: "demo-claude",
-    title: "Claude Pro — روی ایمیل شخصی",
+    title: "Claude Pro",
+    titleFa: "کلود پرو",
     description: "فعال‌سازی اشتراک پرو روی اکانت اصلی شما برای استفاده از قدرتمندترین مدل Anthropic",
     category: "ACCOUNT",
     tag: "ماهانه",
@@ -69,14 +77,18 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 5,
     imageUrl: "/icons/claude-logo.svg",
     isActive: true,
+    accountTypes: ["شخصی"],
     packages: [
-      { id: "claude-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 22 },
-      { id: "claude-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 240 },
+      { id: "claude-1m", nameEn: "1M", nameFa: "۱ ماهه", price: 22 },
+      { id: "claude-3m", nameEn: "3M", nameFa: "۳ ماهه", price: 60 },
+      { id: "claude-6m", nameEn: "6M", nameFa: "۶ ماهه", price: 110 },
+      { id: "claude-12m", nameEn: "1Y", nameFa: "۱ ساله", price: 200 },
     ],
   },
   {
     id: "demo-capcut",
-    title: "CapCut Pro — اکانت آماده",
+    title: "CapCut Pro",
+    titleFa: "کپ‌کات پرو",
     description: "دسترسی به تمامی افکت‌ها، فیلترها و قابلیت‌های پرمیوم کپ‌کات برای ادیت حرفه‌ای",
     category: "ACCOUNT",
     tag: "سالانه",
@@ -90,14 +102,15 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 8,
     imageUrl: "/icons/capcut-logo.svg",
     isActive: true,
+    accountTypes: ["آماده"],
     packages: [
-      { id: "capcut-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 2 },
-      { id: "capcut-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 12 },
+      { id: "capcut-12m", nameEn: "1Y", nameFa: "۱ ساله", price: 12 },
     ],
   },
   {
     id: "demo-gemini",
-    title: "Google Gemini Advanced",
+    title: "Gemini Advanced",
+    titleFa: "جمینای ادونسد",
     description: "دسترسی به هوش مصنوعی قدرتمند گوگل (مدل Advanced) با پشتیبانی عالی از زبان فارسی",
     category: "ACCOUNT",
     tag: "ماهانه",
@@ -107,15 +120,17 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 15,
     imageUrl: "/icons/gemini-logo.svg",
     isActive: true,
+    accountTypes: ["آماده", "شخصی"],
     packages: [
-      { id: "gemini-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 18 },
-      { id: "gemini-6m", nameEn: "6 Months", nameFa: "۶ ماهه", price: 90 },
-      { id: "gemini-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 170 },
+      { id: "gemini-1m", nameEn: "1M", nameFa: "۱ ماهه", price: 18 },
+      { id: "gemini-6m", nameEn: "6M", nameFa: "۶ ماهه", price: 90 },
+      { id: "gemini-12m", nameEn: "1Y", nameFa: "۱ ساله", price: 170 },
     ],
   },
   {
     id: "demo-disney",
-    title: "Disney Plus — اکانت آماده",
+    title: "Disney+",
+    titleFa: "دیزنی پلاس",
     description: "دسترسی به تمامی محتوای Disney+، Marvel، Star Wars، Pixar و National Geographic",
     category: "ACCOUNT",
     tag: "ماهانه",
@@ -125,15 +140,17 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 12,
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg",
     isActive: true,
+    accountTypes: ["آماده", "اشتراکی"],
     packages: [
-      { id: "disney-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 8 },
-      { id: "disney-3m", nameEn: "3 Months", nameFa: "۳ ماهه", price: 22 },
-      { id: "disney-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 80 },
+      { id: "disney-1m", nameEn: "1M", nameFa: "۱ ماهه", price: 8 },
+      { id: "disney-3m", nameEn: "3M", nameFa: "۳ ماهه", price: 22 },
+      { id: "disney-12m", nameEn: "1Y", nameFa: "۱ ساله", price: 80 },
     ],
   },
   {
     id: "demo-psplus",
-    title: "PlayStation Plus — اشتراک",
+    title: "PlayStation Plus",
+    titleFa: "پلی‌استیشن پلاس",
     description: "اشتراک PS Plus برای بازی آنلاین، بازی‌های رایگان ماهانه و تخفیف‌های انحصاری PS Store",
     category: "ACCOUNT",
     tag: "ماهانه",
@@ -143,15 +160,18 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 8,
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/00/PlayStation_logo.svg",
     isActive: true,
+    accountTypes: ["اشتراکی"],
     packages: [
-      { id: "ps-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 10 },
-      { id: "ps-3m", nameEn: "3 Months", nameFa: "۳ ماهه", price: 25 },
-      { id: "ps-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 80 },
+      { id: "ps-1m", nameEn: "1M", nameFa: "۱ ماهه", price: 10 },
+      { id: "ps-3m", nameEn: "3M", nameFa: "۳ ماهه", price: 25 },
+      { id: "ps-6m", nameEn: "6M", nameFa: "۶ ماهه", price: 45 },
+      { id: "ps-12m", nameEn: "1Y", nameFa: "۱ ساله", price: 80 },
     ],
   },
   {
     id: "demo-gamepass",
-    title: "Xbox Game Pass Ultimate",
+    title: "Xbox Game Pass",
+    titleFa: "گیم پس اولتیمیت",
     description: "دسترسی به بیش از ۱۰۰ بازی AAA روی Xbox و PC + اشتراک Xbox Live Gold",
     category: "ACCOUNT",
     tag: "ماهانه",
@@ -161,15 +181,17 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 6,
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Xbox_one_logo.svg",
     isActive: true,
+    accountTypes: ["اشتراکی"],
     packages: [
-      { id: "gp-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 15 },
-      { id: "gp-3m", nameEn: "3 Months", nameFa: "۳ ماهه", price: 40 },
-      { id: "gp-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 140 },
+      { id: "gp-1m", nameEn: "1M", nameFa: "۱ ماهه", price: 15 },
+      { id: "gp-3m", nameEn: "3M", nameFa: "۳ ماهه", price: 40 },
+      { id: "gp-12m", nameEn: "1Y", nameFa: "۱ ساله", price: 140 },
     ],
   },
   {
     id: "demo-midjourney",
-    title: "Midjourney — اشتراک Basic",
+    title: "Midjourney",
+    titleFa: "میدجرنی",
     description: "تولید تصویر با هوش مصنوعی Midjourney — خلاقانه‌ترین ابزار تصویرسازی AI در جهان",
     category: "API",
     tag: "ماهانه",
@@ -179,15 +201,17 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 20,
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Midjourney_Emblem.png",
     isActive: true,
+    accountTypes: ["اشتراکی"],
     packages: [
-      { id: "mj-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 10 },
-      { id: "mj-3m", nameEn: "3 Months", nameFa: "۳ ماهه", price: 27 },
-      { id: "mj-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 96 },
+      { id: "mj-1m", nameEn: "1M", nameFa: "۱ ماهه", price: 10 },
+      { id: "mj-3m", nameEn: "3M", nameFa: "۳ ماهه", price: 27 },
+      { id: "mj-12m", nameEn: "1Y", nameFa: "۱ ساله", price: 96 },
     ],
   },
   {
     id: "demo-canva",
-    title: "Canva Pro — اکانت آماده",
+    title: "Canva Pro",
+    titleFa: "کنوا پرو",
     description: "دسترسی کامل به تمپلیت‌های پرمیوم، حذف پس‌زمینه نامحدود و ابزارهای طراحی حرفه‌ای",
     category: "ACCOUNT",
     tag: "سالانه",
@@ -197,14 +221,15 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 15,
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg",
     isActive: true,
+    accountTypes: ["آماده"],
     packages: [
-      { id: "canva-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 2 },
-      { id: "canva-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 13 },
+      { id: "canva-12m", nameEn: "1Y", nameFa: "۱ ساله", price: 13 },
     ],
   },
   {
     id: "demo-netflix",
-    title: "Netflix Premium — اشتراک",
+    title: "Netflix Premium",
+    titleFa: "نتفلیکس پرمیوم",
     description: "اشتراک Netflix پلن پرمیوم با کیفیت 4K و امکان استفاده همزمان روی ۴ دستگاه",
     category: "ACCOUNT",
     tag: "ماهانه",
@@ -214,6 +239,7 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 18,
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg",
     isActive: true,
+    accountTypes: ["آماده", "شخصی", "اشتراکی"],
     packages: [
       { id: "nf-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 16 },
       { id: "nf-3m", nameEn: "3 Months", nameFa: "۳ ماهه", price: 44 },
@@ -223,7 +249,8 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
   },
   {
     id: "demo-perplexity",
-    title: "Perplexity Pro — اشتراک",
+    title: "Perplexity Pro",
+    titleFa: "پرپلکسیتی پرو",
     description: "موتور جستجوی هوش مصنوعی Perplexity با دسترسی به مدل‌های GPT-4 و Claude",
     category: "API",
     tag: "ماهانه",
@@ -233,6 +260,7 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 10,
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Perplexity_AI_logo.svg",
     isActive: true,
+    accountTypes: ["شخصی", "اشتراکی"],
     packages: [
       { id: "ppx-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 20 },
       { id: "ppx-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 200 },
@@ -241,6 +269,7 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
   {
     id: "demo-adobe",
     title: "Adobe Creative Cloud",
+    titleFa: "ادوبی کریتیو کلاد",
     description: "دسترسی به تمامی اپ‌های Adobe: Photoshop، Illustrator، Premiere Pro و بیشتر",
     category: "LICENSE",
     tag: "ماهانه",
@@ -250,6 +279,7 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 5,
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/40/Adobe_Premiere_Pro_CC_icon.svg",
     isActive: true,
+    accountTypes: ["شخصی", "اشتراکی"],
     packages: [
       { id: "adobe-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 55 },
       { id: "adobe-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 600 },
@@ -257,7 +287,8 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
   },
   {
     id: "demo-notion",
-    title: "Notion AI Plus — اکانت",
+    title: "Notion AI",
+    titleFa: "نوشن هوشمند",
     description: "نوشن پلاس با هوش مصنوعی برای مدیریت پروژه، یادداشت‌برداری و تیم‌ورک حرفه‌ای",
     category: "ACCOUNT",
     tag: "ماهانه",
@@ -267,6 +298,7 @@ const DEMO_PRODUCTS: ProductWithStock[] = [
     stock: 14,
     imageUrl: "https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png",
     isActive: true,
+    accountTypes: ["شخصی"],
     packages: [
       { id: "notion-1m", nameEn: "1 Month", nameFa: "۱ ماهه", price: 16 },
       { id: "notion-12m", nameEn: "12 Months", nameFa: "۱۲ ماهه", price: 160 },
@@ -284,14 +316,36 @@ const CATEGORIES = [
   { id: "software",  fa: "نرم‌افزار",   en: "Software"   },
 ];
 
-function getAccountTypeLabel(product: ProductWithStock): string {
-  const t = product.title + " " + (product.description ?? "");
-  if (t.includes("اکانت آماده") || t.includes("ایمیل آماده")) {
-    if (t.includes("شخصی")) return "اکانت شخصی و اکانت آماده";
-    return "✅ اکانت آماده";
-  }
-  if (t.includes("شخصی")) return "اکانت شخصی";
-  return "اکانت اشتراکی";
+const ACCT_COLOR: Record<string, string> = {
+  "آماده":    "text-emerald-400",
+  "شخصی":    "text-sky-400",
+  "اشتراکی": "text-purple-400",
+};
+const ACCT_DOT: Record<string, string> = {
+  "آماده":    "bg-emerald-400",
+  "شخصی":    "bg-sky-400",
+  "اشتراکی": "bg-purple-400",
+};
+const ACCT_LABEL: Record<string, string> = {
+  "آماده":    "اکانت آماده",
+  "شخصی":    "ایمیل شخصی",
+  "اشتراکی": "اشتراکی",
+};
+
+function AccountTypeBadges({ product }: { product: ProductWithStock }) {
+  const types = product.accountTypes;
+  if (!types || types.length === 0) return null;
+  return (
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mb-0.5">
+      {types.map((type, i) => (
+        <span key={type} className={`flex items-center gap-1 text-[10px] font-semibold ${ACCT_COLOR[type] ?? "text-text-muted"}`}>
+          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${ACCT_DOT[type] ?? "bg-text-muted"}`} />
+          {ACCT_LABEL[type] ?? type}
+          {i < types.length - 1 && <span className="text-border ms-0.5">·</span>}
+        </span>
+      ))}
+    </div>
+  );
 }
 
 const CATEGORY_PRODUCT_MAP: Record<string, string[]> = {
@@ -311,25 +365,31 @@ export default function StorePage() {
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<ProductWithStock | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
   const [activeCategory, setActiveCategory] = useState("all");
+  const [visualCategory, setVisualCategory] = useState("all");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const catBtnRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+  const sliderReady = useRef(false);
   const [scrollThumb, setScrollThumb] = useState({ left: 0, width: 100 });
 
   const isFaRef = useRef(isFa);
   useEffect(() => { isFaRef.current = isFa; }, [isFa]);
 
-  // Chrome RTL: scrollLeft is 0→negative. Safari/Firefox RTL: scrollLeft is maxScroll→0.
-  // Detect once at mount by trying scrollLeft+1: Chrome clamps it (stays same), Safari accepts it.
+  // Chrome/modern Safari RTL: scrollLeft is 0→negative. Old Safari: maxScroll→0 (positive).
+  // Detect by trying scrollLeft=-1: Chrome accepts (goes negative), old Safari clamps to 0.
   const rtlChromeRef = useRef(false);
   useEffect(() => {
+    if (!isFa) return;
     const el = scrollRef.current;
     if (!el) return;
-    if (getComputedStyle(el).direction !== "rtl") return;
     const s = el.scrollLeft;
-    el.scrollLeft = s + 1;
-    rtlChromeRef.current = el.scrollLeft === s;
+    el.scrollLeft = -1;
+    rtlChromeRef.current = el.scrollLeft < 0;
     el.scrollLeft = s;
-  }, []);
+  }, [isFa]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -374,6 +434,29 @@ export default function StorePage() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    setActiveCategory("all");
+    setVisualCategory("all");
+  }, [lang]);
+
+  useEffect(() => {
+    if (!showSuggestions) return;
+    const close = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    window.addEventListener("mousedown", close);
+    return () => window.removeEventListener("mousedown", close);
+  }, [showSuggestions]);
+
+  const suggestions = searchQuery.trim().length > 0
+    ? products.filter((p) => {
+        const q = searchQuery.toLowerCase();
+        return p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
+      }).slice(0, 5)
+    : [];
+
   const filteredProducts = products.filter((p) => {
     const q = searchQuery.toLowerCase();
     const matchesSearch = p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
@@ -381,13 +464,32 @@ export default function StorePage() {
     return matchesSearch && matchesCategory;
   });
 
+  useLayoutEffect(() => {
+    const btn = catBtnRefs.current.get(visualCategory);
+    const slider = sliderRef.current;
+    if (!btn || !slider) return;
+    if (!sliderReady.current) {
+      slider.style.transition = "none";
+      slider.style.opacity = "1";
+      sliderReady.current = true;
+      slider.style.left = `${btn.offsetLeft}px`;
+      slider.style.width = `${btn.offsetWidth}px`;
+      slider.style.height = `${btn.offsetHeight}px`;
+      requestAnimationFrame(() => { slider.style.transition = ""; });
+    } else {
+      slider.style.left = `${btn.offsetLeft}px`;
+      slider.style.width = `${btn.offsetWidth}px`;
+    }
+  }, [visualCategory]);
+
   function handleCategoryChange(id: string) {
+    setVisualCategory(id);
     setProgressKey((k) => k + 1);
     setCategoryLoading(true);
     setTimeout(() => {
       setActiveCategory(id);
       setCategoryLoading(false);
-    }, 400);
+    }, 300);
   }
 
   return (
@@ -402,8 +504,8 @@ export default function StorePage() {
 
 
 
-      {/* Search Bar */}
-      <div className="relative mb-3">
+      {/* Search Bar + Suggestions */}
+      <div ref={searchRef} className="relative mb-3 z-20">
         <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
           <Search size={14} className="text-text-muted" />
         </div>
@@ -411,20 +513,55 @@ export default function StorePage() {
           type="text"
           placeholder={lang === "fa" ? "جستجوی محصولات..." : "Search products..."}
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => { setSearchQuery(e.target.value); setShowSuggestions(true); }}
+          onFocus={() => setShowSuggestions(true)}
           className="block w-full pl-8 pr-3 py-1.5 text-xs border border-border rounded-lg bg-bg-card text-text-primary placeholder-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
         />
+
+        {/* Suggestions dropdown */}
+        {showSuggestions && suggestions.length > 0 && (
+          <div className="absolute top-full mt-1 left-0 right-0 bg-bg-elevated border border-border rounded-xl shadow-xl overflow-hidden">
+            {suggestions.map((product) => {
+              const toman = usdToTomanFormatted(product.price);
+              const price = isFa && toman ? `${toman} تومان` : `$${product.price}`;
+              return (
+                <button
+                  key={product.id}
+                  onClick={() => {
+                    setSelectedProduct(product);
+                    setShowSuggestions(false);
+                    setSearchQuery("");
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 hover:bg-bg-card active:bg-bg-card transition-colors border-b border-border last:border-0 text-start"
+                >
+                  <div className="w-8 h-8 shrink-0 rounded-lg bg-white flex items-center justify-center overflow-hidden">
+                    {product.imageUrl
+                      ? <img src={product.imageUrl} alt="" className="w-full h-full object-contain p-0.5" />
+                      : <span className="text-base">📦</span>
+                    }
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-text-primary truncate">{product.title}</p>
+                    {product.description && (
+                      <p className="text-[9px] text-text-muted truncate mt-0.5">{product.description}</p>
+                    )}
+                  </div>
+                  <div className="shrink-0 flex flex-row items-center gap-1.5 self-center">
+                    <p className="text-[10px] text-accent font-bold" dir="ltr">{price}</p>
+                    <ShoppingBag size={13} className="text-text-muted" />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Category Filter */}
       <div className="relative mb-4">
-        {/* Progress bar */}
-        {categoryLoading && (
-          <div className="absolute -top-1 left-0 h-0.5 bg-accent rounded-full animate-progress-bar z-10" key={progressKey} />
-        )}
         <div
           ref={scrollRef}
-          className="flex overflow-x-auto scrollbar-hide gap-2 cursor-grab active:cursor-grabbing select-none"
+          className="relative flex overflow-x-auto scrollbar-hide gap-2 cursor-grab active:cursor-grabbing select-none"
           style={{ WebkitOverflowScrolling: "touch", paddingInlineEnd: "32px" }}
           onMouseDown={(e) => {
             const el = e.currentTarget;
@@ -450,7 +587,9 @@ export default function StorePage() {
               window.removeEventListener("mouseup", onUp);
               // Prevent category click if user was dragging
               if (moved) {
-                window.addEventListener("click", (ev) => ev.stopPropagation(), { once: true, capture: true });
+                window.addEventListener("click", (ev) => {
+                  if (scrollRef.current?.contains(ev.target as Node)) ev.stopPropagation();
+                }, { once: true, capture: true });
               }
               let v = isFaRef.current ? velocity : -velocity;
               const glide = () => {
@@ -467,16 +606,23 @@ export default function StorePage() {
             return () => cancelAnimationFrame(rafId);
           }}
         >
+          {/* Sliding pill — all positioning done via DOM in useLayoutEffect, no JSX style prop */}
+          <div ref={sliderRef} className="cat-slider-pill" />
           {CATEGORIES.map((cat) => {
-            const isActive = activeCategory === cat.id;
+            const isActive = visualCategory === cat.id;
             return (
               <button
                 key={cat.id}
-                onClick={() => handleCategoryChange(cat.id)}
-                className={`whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 border ${
-                  isActive
-                    ? "bg-accent text-bg-primary border-accent shadow-md"
-                    : "bg-bg-card border-border text-text-secondary"
+                ref={(el) => {
+                  if (el) catBtnRefs.current.set(cat.id, el);
+                  else catBtnRefs.current.delete(cat.id);
+                }}
+                onClick={(e) => {
+                  handleCategoryChange(cat.id);
+                  e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                }}
+                className={`relative z-10 whitespace-nowrap px-4 py-2 rounded-xl text-xs shrink-0 border border-transparent bg-transparent transition-colors duration-300 ${
+                  isActive ? "font-bold text-bg-primary" : "font-semibold text-text-secondary"
                 }`}
               >
                 {lang === "fa" ? cat.fa : cat.en}
@@ -512,8 +658,17 @@ export default function StorePage() {
             <div key={i} className="bg-bg-card rounded-2xl h-64 animate-pulse" />
           ))}
         </div>
-      ) : activeCategory === "all" ? (
-        <div className="grid grid-cols-2 gap-3">
+      ) : (
+      <div
+        style={{
+          opacity: categoryLoading ? 0 : 1,
+          transform: categoryLoading ? "translateY(6px)" : "translateY(0)",
+          transition: "opacity 0.15s ease, transform 0.15s ease",
+          pointerEvents: categoryLoading ? "none" : "auto",
+        }}
+      >
+      {activeCategory === "all" ? (
+        <div key={activeCategory} className="animate-grid-enter grid grid-cols-2 gap-3">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <ProductCard
@@ -529,7 +684,7 @@ export default function StorePage() {
           )}
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div key={activeCategory} className="animate-grid-enter flex flex-col gap-3">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <button
@@ -548,12 +703,15 @@ export default function StorePage() {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0 flex flex-col gap-1">
-                  <p className="text-[8px] font-semibold text-text-muted">
-                    {getAccountTypeLabel(product)}
-                  </p>
-                  <h3 className="text-xs font-bold text-text-primary leading-snug line-clamp-2">
+                  <AccountTypeBadges product={product} />
+                  <h3 className="text-xs font-bold text-text-primary leading-snug line-clamp-1">
                     {product.title}
                   </h3>
+                  {isFa && product.titleFa && (
+                    <p className="text-[10px] font-medium text-text-secondary leading-snug">
+                      {product.titleFa}
+                    </p>
+                  )}
                   {product.description && (
                     <p className="text-[9px] text-text-muted leading-snug line-clamp-1">
                       {product.description}
@@ -561,23 +719,20 @@ export default function StorePage() {
                   )}
                   {/* Price + Buy */}
                   <div className="flex items-center justify-between gap-1 mt-0.5">
-                    {isFa ? (
-                      <div className="flex flex-col min-w-0">
-                        <span className="text-[8px] text-text-muted">شروع قیمت از</span>
-                        <div dir="ltr" className="flex items-baseline gap-0.5 min-w-0">
-                          <span className="text-xs font-bold text-accent truncate">
-                            {usdToTomanFormatted(product.price)}
-                          </span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col">
-                        <span className="text-[8px] text-text-muted">starting from</span>
-                        <span className="text-xs font-bold text-accent" dir="ltr">
-                          ${product.price}
-                        </span>
-                      </div>
-                    )}
+                    {(() => {
+                      const pkgs = product.packages;
+                      const minP = pkgs && pkgs.length > 0 ? Math.min(...pkgs.map((p) => p.price)) : product.price;
+                      const maxP = pkgs && pkgs.length > 0 ? Math.max(...pkgs.map((p) => p.price)) : product.price;
+                      const range = pkgs && pkgs.length > 1 && minP !== maxP;
+                      const minT = usdToTomanFormatted(minP);
+                      const maxT = usdToTomanFormatted(maxP);
+                      const priceStr = range
+                        ? isFa && minT && maxT ? `${minT} تا ${maxT} تومان` : `$${minP} — $${maxP}`
+                        : isFa && minT ? `${minT} تومان` : `$${minP}`;
+                      return (
+                        <span className="text-xs font-bold text-accent" dir="ltr">{priceStr}</span>
+                      );
+                    })()}
                     <div className="shrink-0 flex items-center gap-1 bg-accent text-bg-primary text-[10px] font-bold px-2.5 py-1 rounded-lg">
                       <ShoppingBag size={10} strokeWidth={2.5} />
                       <span>{isFa ? "اطلاعات بیشتر و خرید" : "Details & Buy"}</span>
@@ -592,6 +747,8 @@ export default function StorePage() {
             </div>
           )}
         </div>
+      )}
+      </div>
       )}
 
       {selectedProduct && (

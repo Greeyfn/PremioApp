@@ -129,7 +129,7 @@ export default function ProductSlider({ products, onBuy }: Props) {
     <div className="mb-5">
       {/* Glow border wrapper */}
       <div
-        className="relative rounded-2xl p-[2px] overflow-hidden"
+        className="relative rounded-2xl p-0.5 overflow-hidden"
         style={{ boxShadow: "0 0 0 1px rgba(232,213,176,0.5), 0 0 20px 4px rgba(232,213,176,0.25)" }}
       >
         {/* Rotating sweep */}
@@ -178,39 +178,44 @@ export default function ProductSlider({ products, onBuy }: Props) {
                     </>
                   )}
 
-                  {/* All content — bottom aligned */}
-                  <div className="absolute bottom-0 start-0 end-0 z-10 p-3" dir={isFa ? "rtl" : "ltr"}>
-                    {/* Tag */}
-                    <div className="flex items-center gap-1.5 mb-1.5">
-                      <span className="inline-flex items-center gap-1 bg-black/40 text-white text-[9px] font-bold px-2 py-0.5 rounded-full border border-white/20">
+                  {/* Full overlay — flex column */}
+                  <div className="absolute inset-0 z-10 flex flex-col px-3 pt-6 pb-3" dir={isFa ? "rtl" : "ltr"}>
+                    {/* TOP: badges */}
+                    <div className="flex items-center gap-1.5">
+                      <span className="inline-flex items-center gap-1 bg-black/50 text-white text-[9px] font-bold px-2 py-0.5 rounded-full border border-white/20">
                         {icon} {product.category}
                       </span>
                       {product.tag && (
-                        <span className="text-[9px] text-white/70 bg-black/30 px-2 py-0.5 rounded-full">
+                        <span className="text-[9px] text-white/70 bg-black/40 border border-white/15 px-2 py-0.5 rounded-full">
                           {product.tag}
                         </span>
                       )}
                     </div>
-                    {/* Title */}
-                    <h3 className="slider-title font-bold text-white leading-tight line-clamp-1 mb-1">
-                      {product.title}
-                    </h3>
-                    {/* Description */}
-                    <p className="text-[10px] text-white/70 line-clamp-1 mb-1.5">
-                      {product.description}
-                    </p>
-                    {/* Features — 4 tags */}
-                    {features.length > 0 && (
-                      <div className="grid grid-cols-2 gap-1 mb-2.5">
-                        {features.slice(0, 4).map((f, i) => (
-                          <span key={i} className="inline-flex items-center gap-1 text-[9px] text-white/80 bg-black/30 px-1.5 py-0.5 rounded-full">
-                            <Truck size={7} className="text-accent shrink-0" />
-                            <span className="truncate">{f}</span>
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    {/* Buy button — always physical left */}
+
+                    {/* Title + description + features — upper area */}
+                    <div className="mt-3 px-1">
+                      <h3 className="slider-title font-bold text-white leading-tight line-clamp-1 mb-1">
+                        {product.title}
+                      </h3>
+                      <p className="text-[10px] text-white/70 line-clamp-1 mb-2">
+                        {product.description}
+                      </p>
+                      {features.length > 0 && (
+                        <div className="grid grid-cols-2 gap-1">
+                          {features.slice(0, 4).map((f, i) => (
+                            <span key={i} className="inline-flex items-center gap-1 text-[9px] text-white/80 bg-black/30 px-1.5 py-0.5 rounded-full">
+                              <Truck size={7} className="text-accent shrink-0" />
+                              <span className="truncate">{f}</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Spacer */}
+                    <div className="flex-1" />
+
+                    {/* BOTTOM: buy button */}
                     <div dir="ltr">
                       <button
                         onClick={() => onBuy(product)}
@@ -224,6 +229,21 @@ export default function ProductSlider({ products, onBuy }: Props) {
               );
             })}
           </div>
+
+          {/* Dots */}
+          {total > 1 && (
+            <div className="absolute bottom-3 inset-e-3 z-20 flex items-center gap-1">
+              {products.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => goTo(i)}
+                  className={`rounded-full transition-all duration-300 ${
+                    i === current ? "w-4 h-1.5 bg-accent" : "w-1.5 h-1.5 bg-white/30"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

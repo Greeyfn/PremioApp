@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X, Check } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -86,17 +87,20 @@ export default function BuyModal({ product, onClose, onSuccess }: Props) {
     }
   }
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  const modal = (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center backdrop-blur-sm transition-colors duration-300"
+      className="fixed inset-0 z-[100] flex items-end justify-center backdrop-blur-sm transition-colors duration-300"
       style={{ backgroundColor: visible ? "rgba(0,0,0,0.6)" : "rgba(0,0,0,0)" }}
       onClick={handleClose}
     >
       <div
-        className="w-full max-w-md bg-bg-secondary rounded-t-3xl p-5 pb-8 border-t border-border transition-transform duration-300 ease-out"
-        style={{ transform: visible ? "translateY(0)" : "translateY(100%)" }}
+        className="w-full max-w-md bg-bg-secondary rounded-t-3xl border-t border-border transition-transform duration-300 ease-out flex flex-col"
+        style={{ transform: visible ? "translateY(0)" : "translateY(100%)", height: "80vh" }}
         onClick={(e) => e.stopPropagation()}
       >
+        <div className="overflow-y-auto flex-1 p-5 pb-8 overscroll-contain">
         {success ? (
           <div className="flex flex-col items-center gap-4 py-6">
             <div className="w-16 h-16 bg-success/20 rounded-full flex items-center justify-center">
@@ -185,7 +189,10 @@ export default function BuyModal({ product, onClose, onSuccess }: Props) {
             </button>
           </>
         )}
+        </div>
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 }

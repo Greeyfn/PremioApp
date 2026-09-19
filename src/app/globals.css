@@ -113,6 +113,43 @@ html, body {
   .gap-3 { gap: 8px !important; }
 }
 
+/* Bottom nav sliding pill */
+.nav-slider-pill {
+  position: absolute;
+  border-radius: 16px;
+  background: var(--color-accent);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: left 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              width 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Category sliding pill */
+.cat-slider-pill {
+  position: absolute;
+  top: 0; left: 0;
+  width: 0; height: 0;
+  border-radius: 12px;
+  background: var(--color-accent);
+  box-shadow: 0 2px 8px rgba(232,213,176,0.2);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: left 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              width 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Category grid enter animation */
+@keyframes grid-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-grid-enter {
+  animation: grid-enter 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  will-change: opacity, transform;
+}
+
 /* Page transition */
 @keyframes slide-from-right {
   from { transform: translateX(40px); opacity: 0; }
@@ -123,13 +160,15 @@ html, body {
   to   { transform: translateX(0);     opacity: 1; }
 }
 .page-transition-wrap {
-  will-change: transform, opacity;
+  /* no will-change here — it breaks position:fixed children */
 }
 .page-slide-right {
   animation: slide-from-right 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  will-change: transform, opacity;
 }
 .page-slide-left {
   animation: slide-from-left 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  will-change: transform, opacity;
 }
 
 .scrollbar-hide {

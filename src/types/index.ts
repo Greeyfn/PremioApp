@@ -83,6 +83,7 @@ export type ProductPackage = {
 export type ProductWithStock = {
   id: string;
   title: string;
+  titleFa?: string;
   description: string;
   category: string;
   tag: string | null;
@@ -93,6 +94,7 @@ export type ProductWithStock = {
   features?: string[];
   priceSuffix?: string;
   packages?: ProductPackage[];
+  accountTypes?: ("آماده" | "شخصی" | "اشتراکی")[];
 };
 
 export type OrderWithDetails = {
